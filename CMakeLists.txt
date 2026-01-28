@@ -10,7 +10,7 @@ add_library(clap INTERFACE)
 target_include_directories(clap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include)
 
 add_library(nuklear INTERFACE)
-target_include_directories(nuklear INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/nuklear)
+target_include_directories(nuklear SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/nuklear)
 
 file(GLOB SOURCES 
     "src/*.c"

@@ -1,3 +1,5 @@
+#define NK_IMPLEMENTATION
+#include <nuklear.h>
 #include <clap/clap.h>
 #include <string.h>
 #include <stdlib.h>
