@@ -4,14 +4,23 @@
 #include <clap/ext/gui.h>
 #include <string.h>
 
-bool cdsp_gui_create()
-{
+#include "app.h"
+#include "gui.h"
 
+bool cdsp_gui_create(const clap_plugin_t *plugin, const char *api, bool is_floating)
+{
+  cdsp_app_t* app = (cdsp_app_t*)plugin->plugin_data;
+  cdsp_gui_t* gui = app->gui;
+
+  cdsp_init_gui(app, gui);
   return true;
 }
 
-void cdsp_gui_destroy()
+void cdsp_gui_destroy(const clap_plugin_t *plugin)
 {
+  cdsp_app_t* app = (cdsp_app_t*)plugin->plugin_data;
+  cdsp_gui_t* gui = app->gui;
+  cdsp_destroy_gui(app, gui);
 }
 
 bool cdsp_gui_is_api_supported(const clap_plugin_t *plugin, const char *api, bool is_floating) 

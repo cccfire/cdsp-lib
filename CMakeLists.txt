@@ -70,6 +70,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Standalone executable target
 add_executable(${PROJECT_NAME}_standalone src/main.c)
+target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE)
 target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
 target_include_directories(${PROJECT_NAME}_standalone PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/lib
