@@ -1,5 +1,3 @@
-#define NK_IMPLEMENTATION
-#include <nuklear.h>
 #include <clap/clap.h>
 #include <clap/ext/gui.h>
 #include <string.h>
@@ -73,6 +71,10 @@ static clap_process_status plugin_process(const struct clap_plugin *plugin,
 }
 
 static const void *plugin_get_extension(const struct clap_plugin *plugin, const char *id) {
+
+    if (strcmp(id, CLAP_EXT_GUI)) {
+        return NULL;
+    }
     return NULL;
 }
 

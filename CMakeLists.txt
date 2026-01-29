@@ -9,9 +9,6 @@ list(APPEND CMAKE_PREFIX_PATH /usr/local)
 add_library(clap INTERFACE)
 target_include_directories(clap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include)
 
-add_library(nuklear INTERFACE)
-target_include_directories(nuklear SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/nuklear)
-
 file(GLOB SOURCES 
     "src/*.c"
   )
@@ -23,13 +20,12 @@ file(GLOB LIBSOURCES
 add_library(cdsp-lib STATIC ${LIBSOURCES})
 target_include_directories(cdsp-lib PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/nuklear
 )
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 # add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} cdsp-lib clap nuklear)
+target_link_libraries(${PROJECT_NAME} cdsp-lib clap)
 
 if(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES

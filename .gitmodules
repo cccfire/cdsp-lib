@@ -1,6 +1,6 @@
 [submodule "external/clap"]
 	path = external/clap
 	url = git@github.com:free-audio/clap.git
-[submodule "external/nuklear"]
-	path = external/nuklear
-	url = git@github.com:Immediate-Mode-UI/Nuklear
+[submodule "external/pugl"]
+	path = external/pugl
+	url = https://github.com/lv2/pugl.git
