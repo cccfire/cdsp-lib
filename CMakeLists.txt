@@ -12,9 +12,10 @@ find_package(OpenGL REQUIRED)
 add_library(clap INTERFACE)
 target_include_directories(clap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include)
 
-file(GLOB SOURCES 
+file(GLOB SOURCES
   "src/*.c"
 )
+list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.c")
 
 file(GLOB LIBSOURCES 
   "lib/*.c"
@@ -63,10 +64,28 @@ target_link_libraries(cdsp-lib PRIVATE ${CAIRO_LIB} OpenGL::GL pugl)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
-# add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
 target_include_directories(${PROJECT_NAME} PRIVATE
 )
+
+# Standalone executable target
+add_executable(${PROJECT_NAME}_standalone src/main.c)
+target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
+target_include_directories(${PROJECT_NAME}_standalone PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
+  ${PUGL_INCLUDE_DIR}
+)
+
+if(APPLE)
+  target_link_libraries(${PROJECT_NAME}_standalone "-framework CoreFoundation" "-framework AppKit" "-framework CoreGraphics")
+  target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE IS_MAC=1)
+elseif(UNIX)
+  target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE IS_LINUX=1)
+elseif(WIN32)
+  target_link_libraries(${PROJECT_NAME}_standalone d3d12.lib dxgi.lib d3dcompiler.lib dxguid.lib)
+  target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE IS_WIN=1)
+endif()
 
 if(APPLE)
   set_target_properties(${PROJECT_NAME} PROPERTIES
