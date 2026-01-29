@@ -1,3 +1,5 @@
+#include <pugl/pugl.h>
+#include <pugl/gl.h>
 #include <clap/clap.h>
 #include <clap/ext/gui.h>
 #include <string.h>
