@@ -20,13 +20,16 @@ file(GLOB LIBSOURCES
     "lib/*.c"
   )
 
-add_library(ccc-clap-lib STATIC ${LIBSOURCES})
-target_include_directories(ccc-clap-lib PUBLIC .)
+add_library(cdsp-lib STATIC ${LIBSOURCES})
+target_include_directories(cdsp-lib PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/nuklear
+)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 # add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} ccc-clap-lib clap nuklear)
+target_link_libraries(${PROJECT_NAME} cdsp-lib clap nuklear)
 
 if(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES
