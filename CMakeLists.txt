@@ -7,6 +7,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
 find_library(CAIRO_LIB cairo PATHS C:/lib)
+set(CAIRO_DIR "${CMAKE_SOURCE_DIR}/external/cairo")
+set(CAIRO_INCLUDE_DIR 
+  "${CAIRO_DIR}/src"
+  "${CAIRO_DIR}/build/src" )
+
 find_package(OpenGL REQUIRED)
 
 add_library(clap INTERFACE)
@@ -59,6 +64,7 @@ add_library(cdsp-lib STATIC ${LIBSOURCES})
 target_include_directories(cdsp-lib PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
   ${PUGL_INCLUDE_DIR}
+  ${CAIRO_INCLUDE_DIR}
 )
 target_link_libraries(cdsp-lib PRIVATE ${CAIRO_LIB} OpenGL::GL pugl)
 
@@ -66,6 +72,8 @@ add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
 target_include_directories(${PROJECT_NAME} PRIVATE
+  ${PUGL_INCLUDE_DIR}
+  ${CAIRO_INCLUDE_DIR}
 )
 
 # Standalone executable target

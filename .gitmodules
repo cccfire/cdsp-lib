@@ -4,3 +4,6 @@
 [submodule "external/pugl"]
 	path = external/pugl
 	url = https://github.com/lv2/pugl.git
+[submodule "external/cairo"]
+	path = external/cairo
+	url = https://gitlab.freedesktop.org/cairo/cairo.git

@@ -1,4 +1,5 @@
 #pragma once
+#include <cairo.h>
 #include <pugl/pugl.h>
 #include <pugl/gl.h>
 
@@ -6,10 +7,14 @@
 
 typedef struct cdsp_gui cdsp_gui_t;
 typedef struct cdsp_gui {
-  uint32_t aspect_ratio_width;
-  uint32_t aspect_ratio_height;
   PuglWorld* world;
   PuglView* view;
+
+  cairo_surface_t* cairo_surface;
+  cairo_t* cairo_ctx;
+
+  uint32_t aspect_ratio_width;
+  uint32_t aspect_ratio_height;
   void *data;
 
   void (*init) (cdsp_app_t*);
