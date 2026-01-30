@@ -14,15 +14,15 @@ typedef struct cdsp_app {
   void *ctx;
   cdsp_gui_t *gui;
   cdsp_dsp_t *dsp;
+  double sample_rate;
+  uint32_t min_frames_count;
+  uint32_t max_frames_count;
   void *_plugin; // 
                  
   void (*init)(cdsp_app_t*);
+  void (*destroy)(cdsp_app_t*);
 
   CDSP_APP_TYPE_T type;
 } cdsp_app_t;
 
-typedef struct cdsp_dsp cdsp_dsp_t;
-typedef struct cdsp_dsp {
-  void *data;
-} cdsp_dsp_t;
 

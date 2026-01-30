@@ -1,3 +1,4 @@
 *.swp
+clap-host.exe
 build/
 .claude/

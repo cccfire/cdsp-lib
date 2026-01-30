@@ -26,16 +26,16 @@ typedef struct cdsp_gui {
   bool should_preserve_aspect_ratio;
 } cdsp_gui_t;
 
-void cdsp_gui_init(cdsp_app_t* app, cdsp_gui_t* gui);
-void cdsp_gui_destroy(cdsp_app_t* app, cdsp_gui_t* gui);
+void cdsp_gui_init(cdsp_app_t* app);
+void cdsp_gui_destroy(cdsp_app_t* app);
 
-bool cdsp_gui_set_scale(cdsp_app_t* app, cdsp_gui_t* gui, double scale);
-bool cdsp_gui_get_size(cdsp_app_t* app, cdsp_gui_t* gui, uint32_t *width, uint32_t *height);
-bool cdsp_gui_can_resize(cdsp_app_t* app, cdsp_gui_t* gui);
-bool cdsp_gui_adjust_size(cdsp_app_t* app, cdsp_gui_t* gui, uint32_t *width, uint32_t *height);
-bool cdsp_gui_set_size(cdsp_app_t* app, cdsp_gui_t* gui, uint32_t width, uint32_t height);
-bool cdsp_gui_set_parent(cdsp_app_t* app, cdsp_gui_t* gui, const void* window);
-bool cdsp_gui_set_transient(cdsp_app_t* app, cdsp_gui_t* gui, const void* window);
-void cdsp_gui_suggest_title(cdsp_app_t* app, cdsp_gui_t* gui, const char* title);
-bool cdsp_gui_show(cdsp_app_t* app, cdsp_gui_t* gui);
-bool cdsp_gui_hide(cdsp_app_t* app, cdsp_gui_t* gui);
+bool cdsp_gui_set_scale(cdsp_app_t* app, double scale);
+bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height);
+bool cdsp_gui_can_resize(cdsp_app_t* app);
+bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height);
+bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height);
+bool cdsp_gui_set_parent(cdsp_app_t* app, const void* window);
+bool cdsp_gui_set_transient(cdsp_app_t* app, const void* window);
+void cdsp_gui_suggest_title(cdsp_app_t* app, const char* title);
+bool cdsp_gui_show(cdsp_app_t* app);
+bool cdsp_gui_hide(cdsp_app_t* app);
