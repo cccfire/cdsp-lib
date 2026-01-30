@@ -10,11 +10,14 @@ typedef struct cdsp_gui {
   PuglWorld* world;
   PuglView* view;
 
-  cairo_surface_t* cairo_surface;
   cairo_t* cairo_ctx;
 
-  uint32_t aspect_ratio_width;
-  uint32_t aspect_ratio_height;
+  uint16_t aspect_ratio_width;
+  uint16_t aspect_ratio_height;
+  uint16_t min_width;
+  uint16_t min_height;
+  uint16_t default_width;
+  uint16_t default_height;
   void *data;
 
   void (*init) (cdsp_app_t*);

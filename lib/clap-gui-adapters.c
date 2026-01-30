@@ -95,9 +95,6 @@ bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32
 
 bool cdsp_gui_clap_can_resize(const clap_plugin_t *plugin)
 {
-  cdsp_app_t* app = (cdsp_app_t*)plugin->plugin_data;
-  cdsp_gui_t* gui = app->gui;
-  //cdsp_can_resize
   return true;
 }
 
@@ -119,6 +116,7 @@ bool cdsp_gui_clap_adjust_size(const clap_plugin_t *plugin, uint32_t *width, uin
 {
   cdsp_app_t* app = (cdsp_app_t*)plugin->plugin_data;
   cdsp_gui_t* gui = app->gui;
+
   return cdsp_gui_adjust_size(app, gui, width, height);
 }
 
