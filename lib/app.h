@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 
 typedef struct cdsp_app cdsp_app_t;
 typedef struct cdsp_gui cdsp_gui_t;
@@ -10,7 +11,7 @@ typedef enum cdsp_app_type {
 } CDSP_APP_TYPE_T;
 
 typedef struct cdsp_app {
-  char *name;
+  const char *name;
   void *ctx;
   cdsp_gui_t *gui;
   cdsp_dsp_t *dsp;

@@ -164,17 +164,6 @@ const void *cdsp_clap_entry_get_factory(const char *factory_id)
   return NULL;
 }
 
-const clap_plugin_entry_t cdsp_create_clap_components(cdsp_app_t* app) 
-{
-  clap_plugin_entry_t entry = {
-    .clap_version = CLAP_VERSION_INIT,
-    .init = cdsp_clap_entry_init,
-    .deinit = cdsp_clap_entry_deinit,
-    .get_factory = cdsp_clap_entry_get_factory
-  };
-  return entry;
-}
-
 // Export the plugin entry point
 
 

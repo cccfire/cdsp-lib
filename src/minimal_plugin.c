@@ -1,7 +1,10 @@
 #include <clap/clap.h>
-#include <clap/ext/gui.h>
+#include <cdsp/app.h>
+#include <cdsp/clap-adapters.h>
+
 #include <string.h>
 #include <stdlib.h>
+
 
 
 // Plugin descriptor
@@ -18,11 +21,4 @@ static const clap_plugin_descriptor_t s_plugin_desc = {
     .features = (const char *[]){CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL}
 };
 
-/*
-cdsp_app_t app = {
-  .name = "app"
-}
-
-// Export the plugin entry point
-CLAP_EXPORT const clap_plugin_entry_t clap_entry = cdsp_create_clap_components(&app);
-*/
+CDSP_EXPORT_CLAP_PLUGIN;

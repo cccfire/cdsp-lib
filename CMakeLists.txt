@@ -26,6 +26,9 @@ file(GLOB LIBSOURCES
   "lib/*.c"
 )
 
+file(GLOB LIB_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.h")
+file(COPY ${LIB_HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/cdsp)
+
 # Pugl vendored directory
 set(PUGL_DIR "${CMAKE_SOURCE_DIR}/external/pugl")
 
@@ -72,6 +75,7 @@ add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
 target_include_directories(${PROJECT_NAME} PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${PUGL_INCLUDE_DIR}
   ${CAIRO_INCLUDE_DIR}
 )

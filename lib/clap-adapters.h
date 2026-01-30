@@ -1,11 +1,19 @@
 #pragma once
 
 #include <clap/clap.h>
+#include <clap/ext/gui.h>
 
 #include "app.h"
 
+#define CDSP_EXPORT_CLAP_PLUGIN CLAP_EXPORT const clap_plugin_entry_t clap_entry = { \
+     .clap_version = CLAP_VERSION_INIT, \
+     .init = cdsp_clap_entry_init, \
+     .deinit = cdsp_clap_entry_deinit, \
+     .get_factory = cdsp_clap_entry_get_factory \
+     }
+
 typedef struct cdsp_clap_feature {
-  char* name;
+  const char* name;
   void* feature;
   void* (*init_feature) (cdsp_app_t*);
 } cdsp_clap_feature_t;
@@ -59,9 +67,6 @@ bool cdsp_clap_entry_init(const char *plugin_path);
 void cdsp_clap_entry_deinit(void);
 
 const void *cdsp_clap_entry_get_factory(const char *factory_id);
-
-const clap_plugin_entry_t cdsp_create_clap_components(cdsp_app_t *app);
-
 
   // Export the plugin entry point
   /*
