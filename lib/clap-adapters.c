@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "clap-adapters.h"
+
 // Plugin descriptor
 const clap_plugin_descriptor_t s_plugin_desc = {
     .clap_version = CLAP_VERSION_INIT,
@@ -22,37 +24,52 @@ typedef struct {
     const clap_host_t *host;
 } minimal_plugin_t;
 
+clap_plugin_entry_t cdsp_create_clap_components(cdsp_app_t* app) 
+{
+  clap_plugin_entry_t entry;
+  return entry;
+}
+
 // Plugin callbacks
-bool cdsp_clap_plugin_init(const struct clap_plugin *plugin) {
+bool cdsp_clap_plugin_init(const struct clap_plugin *plugin) 
+{
     return true;
 }
 
-void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) {
-    free((void *)plugin);
+void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) 
+{
+  free((cdsp_clap_package_t*)plugin->plugin_data);
+  free((void *)plugin);
 }
 
 bool cdsp_clap_plugin_activate(const struct clap_plugin *plugin,
                            double sample_rate,
                            uint32_t min_frames_count,
-                           uint32_t max_frames_count) {
+                           uint32_t max_frames_count) 
+{
     return true;
 }
 
-void cdsp_clap_plugin_deactivate(const struct clap_plugin *plugin) {
+void cdsp_clap_plugin_deactivate(const struct clap_plugin *plugin) 
+{
 }
 
-bool cdsp_clap_plugin_start_processing(const struct clap_plugin *plugin) {
+bool cdsp_clap_plugin_start_processing(const struct clap_plugin *plugin) 
+{
     return true;
 }
 
-void cdsp_clap_plugin_stop_processing(const struct clap_plugin *plugin) {
+void cdsp_clap_plugin_stop_processing(const struct clap_plugin *plugin) 
+{
 }
 
-void cdsp_clap_plugin_reset(const struct clap_plugin *plugin) {
+void cdsp_clap_plugin_reset(const struct clap_plugin *plugin) 
+{
 }
 
 clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
-                                         const clap_process_t *process) {
+                                         const clap_process_t *process) 
+{
     const uint32_t nframes = process->frames_count;
     const uint32_t nev = process->in_events->size(process->in_events);
 
@@ -70,7 +87,8 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
     return CLAP_PROCESS_CONTINUE;
 }
 
-const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, const char *id) {
+const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, const char *id) 
+{
 
     if (strcmp(id, CLAP_EXT_GUI)) {
         return NULL;
@@ -78,19 +96,23 @@ const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, con
     return NULL;
 }
 
-void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin) {
+void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin) 
+{
 }
 
 // Factory
 const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_plugin_factory *factory,
                                                          const clap_host_t *host,
-                                                         const char *plugin_id) {
-    if (strcmp(plugin_id, s_plugin_desc.id)) {
+                                                         const char *plugin_id) 
+{
+    if (strcmp(plugin_id, s_plugin_desc.id)) 
+{
         return NULL;
     }
 
-    minimal_plugin_t *plugin_data = (minimal_plugin_t *)calloc(1, sizeof(minimal_plugin_t) + sizeof(clap_plugin_t));
-    if (!plugin_data) {
+    cdsp_clap_package_t *plugin_data = (cdsp_clap_package_t*)calloc(1, sizeof(cdsp_clap_package_t) + sizeof(clap_plugin_t));
+    if (!plugin_data) 
+{
         return NULL;
     }
 
@@ -113,12 +135,14 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
     return plugin;
 }
 
-uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_factory *factory) {
+uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_factory *factory) 
+{
     return 1;
 }
 
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory,
-                                                                            uint32_t index) {
+                                                                            uint32_t index) 
+{
     return index == 0 ? &s_plugin_desc : NULL;
 }
 
@@ -129,14 +153,17 @@ const clap_plugin_factory_t s_plugin_factory = {
 };
 
 // Entry point
-bool entry_init(const char *plugin_path) {
+bool cdsp_clap_entry_init(const char *plugin_path) 
+{
     return true;
 }
 
-void entry_deinit(void) {
+void cdsp_clap_entry_deinit(void) 
+{
 }
 
-const void *entry_get_factory(const char *factory_id) {
+const void *cdsp_clap_entry_get_factory(const char *factory_id) 
+{
     if (!strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID)) {
         return &s_plugin_factory;
     }
@@ -144,16 +171,11 @@ const void *entry_get_factory(const char *factory_id) {
 }
 
 // Export the plugin entry point
-CLAP_EXPORT const clap_plugin_entry_t clap_entry = {
-    .clap_version = CLAP_VERSION_INIT,
-    .init = entry_init,
-    .deinit = entry_deinit,
-    .get_factory = entry_get_factory
-};
 
 
 /*
-   const void *Plugin<h, l>::clapExtension(const clap_plugin *plugin, const char *id) noexcept {
+   const void *Plugin<h, l>::clapExtension(const clap_plugin *plugin, const char *id) noexcept 
+{
    auto &self = from(plugin);
    self.ensureInitialized("extension");
 
