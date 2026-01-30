@@ -60,7 +60,7 @@ void cdsp_clap_entry_deinit(void);
 
 const void *cdsp_clap_entry_get_factory(const char *factory_id);
 
-clap_plugin_entry_t cdsp_create_clap_components(cdsp_app_t *app);
+const clap_plugin_entry_t cdsp_create_clap_components(cdsp_app_t *app);
 
 
   // Export the plugin entry point
