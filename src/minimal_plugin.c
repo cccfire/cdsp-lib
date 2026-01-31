@@ -1,6 +1,7 @@
 #include <clap/clap.h>
 #include <cdsp/app.h>
 #include <cdsp/clap-adapters.h>
+#include <cdsp/clap-features-adapters.h>
 
 #include <string.h>
 #include <stdlib.h>

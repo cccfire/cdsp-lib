@@ -146,6 +146,3 @@ const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(
 bool cdsp_clap_entry_init(const char *plugin_path);
 
 void cdsp_clap_entry_deinit(void);
-
-cdsp_clap_feature_t** cdsp_clap_generate_features_from_app(cdsp_app_t* app);
-void cdsp_clap_free_features(const cdsp_clap_package_t* package);
