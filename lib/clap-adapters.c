@@ -24,16 +24,14 @@ typedef struct {
   const clap_host_t *host;
 } minimal_plugin_t;
 
-// Plugin callbacks
-bool cdsp_clap_plugin_init(const struct clap_plugin *plugin) 
-{
-  return true;
-}
-
 void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) 
 {
-  free((cdsp_clap_package_t*)plugin->plugin_data);
-  free((void *)plugin);
+  cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
+  app->destroy(app);
+  free(app);
+  cdsp_clap_free_features((cdsp_clap_package_t*)plugin->plugin_data);
+  free((void*)plugin->plugin_data);
+  free((void*)plugin);
 }
 
 bool cdsp_clap_plugin_activate(const struct clap_plugin *plugin,
@@ -41,6 +39,10 @@ bool cdsp_clap_plugin_activate(const struct clap_plugin *plugin,
     uint32_t min_frames_count,
     uint32_t max_frames_count) 
 {
+  cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
+  app->sample_rate = sample_rate;
+  app->min_frames_count = min_frames_count;
+  app->max_frames_count = max_frames_count;
   return true;
 }
 
@@ -94,57 +96,10 @@ void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin)
 {
 }
 
-// Factory
-const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_plugin_factory *factory,
-    const clap_host_t *host,
-    const char *plugin_id) 
-{
-  if (strcmp(plugin_id, s_plugin_desc.id)) 
-  {
-    return NULL;
-  }
-
-  cdsp_clap_package_t *plugin_data = (cdsp_clap_package_t*)calloc(1, sizeof(cdsp_clap_package_t) + sizeof(clap_plugin_t));
-  if (!plugin_data) 
-  {
-    return NULL;
-  }
-
-  plugin_data->host = host;
-
-  clap_plugin_t *plugin = (clap_plugin_t *)(plugin_data + 1);
-  plugin->desc = &s_plugin_desc;
-  plugin->plugin_data = plugin_data;
-  plugin->init = cdsp_clap_plugin_init;
-  plugin->destroy = cdsp_clap_plugin_destroy;
-  plugin->activate = cdsp_clap_plugin_activate;
-  plugin->deactivate = cdsp_clap_plugin_deactivate;
-  plugin->start_processing = cdsp_clap_plugin_start_processing;
-  plugin->stop_processing = cdsp_clap_plugin_stop_processing;
-  plugin->reset = cdsp_clap_plugin_reset;
-  plugin->process = cdsp_clap_plugin_process;
-  plugin->get_extension = cdsp_clap_plugin_get_extension;
-  plugin->on_main_thread = cdsp_clap_plugin_on_main_thread;
-
-  return plugin;
-}
-
 uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_factory *factory) 
 {
   return 1;
 }
-
-const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory,
-    uint32_t index) 
-{
-  return index == 0 ? &s_plugin_desc : NULL;
-}
-
-const clap_plugin_factory_t s_plugin_factory = {
-  .get_plugin_count = cdsp_clap_plugin_factory_get_plugin_count,
-  .get_plugin_descriptor = cdsp_clap_plugin_factory_get_plugin_descriptor,
-  .create_plugin = cdsp_clap_plugin_factory_create_plugin,
-};
 
 // Entry point
 bool cdsp_clap_entry_init(const char *plugin_path) 
@@ -156,12 +111,21 @@ void cdsp_clap_entry_deinit(void)
 {
 }
 
-const void *cdsp_clap_entry_get_factory(const char *factory_id) 
+cdsp_clap_feature_t** cdsp_clap_generate_features_from_app(cdsp_app_t* app)
 {
-  if (!strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID)) {
-    return &s_plugin_factory;
-  }
   return NULL;
+}
+
+void cdsp_clap_free_features(const cdsp_clap_package_t* package)
+{
+  cdsp_clap_feature_t** features = package->features;
+  for (size_t i = 0; i < package->features_length; i++) {
+    free(features[i]);
+    //features[i] = NULL;
+  }
+  free(features);
+  //package->features = NULL;
+  //package->features_length = 0;
 }
 
 // Export the plugin entry point

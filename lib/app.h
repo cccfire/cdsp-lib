@@ -11,7 +11,7 @@ typedef enum cdsp_app_type {
 } CDSP_APP_TYPE_T;
 
 typedef struct cdsp_app {
-  const char *name;
+  char *name;
   void *ctx;
   cdsp_gui_t *gui;
   cdsp_dsp_t *dsp;
@@ -21,9 +21,11 @@ typedef struct cdsp_app {
   void *_plugin; // 
                  
   void (*init)(cdsp_app_t*);
-  void (*destroy)(cdsp_app_t*);
+  void (*destroy)(cdsp_app_t*); 
 
   CDSP_APP_TYPE_T type;
 } cdsp_app_t;
 
+typedef void (*cdsp_create_app_fun_t) (cdsp_app_t*);
 
+void cdsp_destroy_app(cdsp_app_t* app);

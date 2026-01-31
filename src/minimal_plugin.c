@@ -5,20 +5,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+void create_minimal_app(cdsp_app_t* app)
+{
+  app->name = "minimal app";
+}
 
+CDSP_PLUGIN_DESCRIPTOR(
+    "com.example.minimal-clap-plugin",
+    "minimal plugin",
+    "cccfire",
+    "https://example.com",
+    "0.1.0",
+    "minimal plugin example");
 
-// Plugin descriptor
-static const clap_plugin_descriptor_t s_plugin_desc = {
-    .clap_version = CLAP_VERSION_INIT,
-    .id = "com.example.minimal-clap-plugin",
-    .name = "Minimal CLAP Plugin",
-    .vendor = "Example Vendor",
-    .url = "https://example.com",
-    .manual_url = "https://example.com/manual",
-    .support_url = "https://example.com/support",
-    .version = "1.0.0",
-    .description = "A minimal CLAP plugin example",
-    .features = (const char *[]){CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL}
-};
-
-CDSP_EXPORT_CLAP_PLUGIN;
+CDSP_SETUP_PLUGIN(create_minimal_app);

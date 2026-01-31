@@ -40,9 +40,11 @@ typedef struct cdsp_dsp cdsp_dsp_t;
 typedef struct cdsp_dsp {
   void *data;
 
+  void (*init) (cdsp_app_t*);
   void (*start_processing) (cdsp_app_t*);
   void (*process) (cdsp_app_t*, cdsp_process_data_t*);
   void (*stop_processing) (cdsp_app_t*);
+  void (*destroy) (cdsp_app_t*);
 } cdsp_dsp_t;
 
 // bool returns true on success, false otherwise.

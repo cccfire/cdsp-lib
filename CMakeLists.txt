@@ -27,7 +27,17 @@ file(GLOB LIBSOURCES
 )
 
 file(GLOB LIB_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.h")
-file(COPY ${LIB_HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/cdsp)
+
+add_custom_target(copy_headers
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/include/cdsp
+  )
+
+  foreach(header ${LIB_HEADERS})
+      add_custom_command(TARGET copy_headers POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${header} ${CMAKE_SOURCE_DIR}/include/cdsp/
+              )
+            endforeach()
+
 
 # Pugl vendored directory
 set(PUGL_DIR "${CMAKE_SOURCE_DIR}/external/pugl")
@@ -70,6 +80,7 @@ target_include_directories(cdsp-lib PRIVATE
   ${CAIRO_INCLUDE_DIR}
 )
 target_link_libraries(cdsp-lib PRIVATE ${CAIRO_LIB} OpenGL::GL pugl)
+add_dependencies(cdsp-lib copy_headers)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
