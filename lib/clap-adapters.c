@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "app.h"
 #include "clap-adapters.h"
 
 // Plugin descriptor
@@ -27,7 +28,7 @@ typedef struct {
 void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) 
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
-  app->destroy(app);
+  cdsp_destroy_app(app);
   free(app);
   cdsp_clap_free_features((cdsp_clap_package_t*)plugin->plugin_data);
   free((void*)plugin->plugin_data);
