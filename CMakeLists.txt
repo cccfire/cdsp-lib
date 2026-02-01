@@ -10,13 +10,8 @@ list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
 set(CMAKE_FIND_DEBUG_MODE OFF)
 
-include(FetchContent)
-FetchContent_Declare(
-  cairo
-  GIT_REPOSITORY https://gitlab.freedesktop.org/cairo/cairo.git
-  GIT_TAG 1.18.0
-)
-FetchContent_MakeAvailable(cairo)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+find_package(cairo REQUIRED)
 
 find_package(OpenGL REQUIRED)
 
@@ -75,7 +70,7 @@ target_include_directories(pugl PRIVATE
 )
 target_compile_definitions(pugl PUBLIC PUGL_STATIC)
 
-target_link_libraries(pugl cairo OpenGL::GL)
+target_link_libraries(pugl cairo::cairo OpenGL::GL)
 
 if(WIN32)
   target_link_libraries(pugl dwmapi)
@@ -85,23 +80,25 @@ add_library(cdsp-lib STATIC ${LIBSOURCES})
 target_include_directories(cdsp-lib PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
   ${PUGL_INCLUDE_DIR}
+  ${cairo_INCLUDE_DIR}
 )
-target_link_libraries(cdsp-lib PRIVATE cairo OpenGL::GL pugl)
+target_link_libraries(cdsp-lib PRIVATE cairo::cairo OpenGL::GL pugl)
 add_dependencies(cdsp-lib copy_headers)
 target_compile_definitions(cdsp-lib PUBLIC PUGL_STATIC)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC PUGL_STATIC)
-target_link_libraries(${PROJECT_NAME} cdsp-lib clap cairo OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} cdsp-lib clap cairo::cairo OpenGL::GL)
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${PUGL_INCLUDE_DIR}
+  ${cairo_INCLUDE_DIR}
 )
 
 # Standalone executable target
 add_executable(${PROJECT_NAME}_standalone src/main.c)
 target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE)
-target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap cairo OpenGL::GL )
+target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap cairo::cairo OpenGL::GL )
 target_include_directories(${PROJECT_NAME}_standalone PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include

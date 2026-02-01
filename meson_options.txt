@@ -1,0 +1,13 @@
+# Build options for clap_app
+
+option('copy_after_build',
+  type: 'boolean',
+  value: false,
+  description: 'Copy plugin to system plugin directory after build',
+)
+
+option('use_sanitizer',
+  type: 'boolean',
+  value: false,
+  description: 'Enable address and undefined behavior sanitizers (macOS only)',
+)
