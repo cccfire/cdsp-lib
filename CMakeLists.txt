@@ -1,3 +1,5 @@
+include(ExternalProject)
+
 cmake_minimum_required(VERSION 3.16)
 project(clap_app C)
 
@@ -67,7 +69,7 @@ set(PUGL_SOURCES
   ${PUGL_BACKEND_SOURCES}
 )
 
-add_library(pugl STATIC ${PUGL_SOURCES})
+add_library(pugl SHARED ${PUGL_SOURCES})
 target_include_directories(pugl PRIVATE
   ${PUGL_INCLUDE_DIR}
 )

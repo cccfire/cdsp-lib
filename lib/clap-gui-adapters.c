@@ -1,6 +1,8 @@
+#include <string.h>
+#include <assert.h>
+
 #include <clap/clap.h>
 #include <clap/ext/gui.h>
-#include <string.h>
 
 #include "clap-adapters.h"
 #include "clap-gui-adapters.h"
@@ -56,7 +58,7 @@ bool cdsp_gui_clap_create(const clap_plugin_t *plugin, const char *api, bool is_
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
-  cdsp_init_gui(app);
+  cdsp_gui_init(app);
 
   return true;
 }
@@ -66,7 +68,7 @@ void cdsp_gui_clap_destroy(const clap_plugin_t *plugin)
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
-  cdsp_destroy_gui(app);
+  cdsp_gui_destroy(app);
 }
 
 /**
@@ -160,4 +162,23 @@ bool cdsp_gui_clap_hide(const clap_plugin_t *plugin)
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   return cdsp_gui_hide(app);
+}
+
+void cdsp_init_clap_gui(clap_plugin_gui_t* gui)
+{
+  gui->is_api_supported = cdsp_gui_clap_is_api_supported;
+  gui->get_preferred_api = cdsp_gui_clap_get_preferred_api;
+  gui->create = cdsp_gui_clap_create;
+  gui->destroy = cdsp_gui_clap_destroy;
+  gui->set_scale = cdsp_gui_clap_set_scale;
+  gui->get_size = cdsp_gui_clap_get_size;
+  gui->can_resize = cdsp_gui_clap_can_resize;
+  gui->get_resize_hints = cdsp_gui_clap_get_resize_hints;
+  gui->adjust_size = cdsp_gui_clap_adjust_size;
+  gui->set_size = cdsp_gui_clap_set_size;
+  gui->set_parent = cdsp_gui_clap_set_parent;
+  gui->set_transient = cdsp_gui_clap_set_transient;
+  gui->suggest_title = cdsp_gui_clap_suggest_title;
+  gui->show = cdsp_gui_clap_show;
+  gui->hide = cdsp_gui_clap_hide;
 }

@@ -29,8 +29,9 @@ bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
   cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));\
   cdsp_create_app_fun_t create_app = creator;\
   create_app(app);\
-  ((cdsp_clap_package_t*)plugin->plugin_data)->app = app;\
-  ((cdsp_clap_package_t*)plugin->plugin_data)->features = cdsp_clap_generate_features_from_app(app);\
+  cdsp_clap_package_t* plugin_data = ((cdsp_clap_package_t*)plugin->plugin_data);\
+  plugin_data->app = app;\
+  plugin_data->features = cdsp_clap_generate_features_from_app(app, &plugin_data->features_length);\
   return true;\
 }\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
@@ -101,7 +102,7 @@ typedef struct cdsp_clap_package {
   cdsp_app_t* app;
   const clap_host_t* host;
   size_t features_length;
-  cdsp_clap_feature_t** features;
+  cdsp_clap_feature_t* features;
 } cdsp_clap_package_t;
 
 const clap_plugin_entry_t cdsp_create_clap_components();

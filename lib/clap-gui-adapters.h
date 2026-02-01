@@ -34,3 +34,4 @@ bool cdsp_gui_clap_show(const clap_plugin_t *plugin);
 
 bool cdsp_gui_clap_hide(const clap_plugin_t *plugin);
 
+void cdsp_init_clap_gui(clap_plugin_gui_t* gui);
