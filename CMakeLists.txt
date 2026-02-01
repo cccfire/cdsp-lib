@@ -75,6 +75,10 @@ target_include_directories(pugl PRIVATE
 )
 target_link_libraries(pugl ${CAIRO_LIB} OpenGL::GL)
 
+if(WIN32)
+  target_link_libraries(pugl dwmapi)
+endif()
+
 add_library(cdsp-lib STATIC ${LIBSOURCES})
 target_include_directories(cdsp-lib PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
