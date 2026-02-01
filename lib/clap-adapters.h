@@ -11,7 +11,8 @@
  */
 
 #define CDSP_PLUGIN_DESCRIPTOR(in_id, in_name, in_vendor, in_url, in_version, in_description)\
-  static const clap_plugin_descriptor_t __cdsp_clap_plugin_desc = {\
+static const clap_plugin_descriptor_t __cdsp_clap_plugin_desc = {\
+    .clap_version = CLAP_VERSION_INIT,\
     .id = in_id,\
     .name = in_name,\
     .vendor = in_vendor,\
@@ -21,7 +22,7 @@
     .version = in_version,\
     .description = in_description,\
     .features = (const char *[]){CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL}\
-  }
+}
 
 #define CDSP_SETUP_PLUGIN(creator) \
 bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
@@ -32,6 +33,7 @@ bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
   cdsp_clap_package_t* plugin_data = ((cdsp_clap_package_t*)plugin->plugin_data);\
   plugin_data->app = app;\
   plugin_data->features = cdsp_clap_generate_features_from_app(app, &plugin_data->features_length);\
+  printf("Hello from Pluginit\n");\
   return true;\
 }\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
@@ -55,7 +57,6 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
     return NULL;\
   }\
   \
-\
   plugin_data->host = host;\
 \
   clap_plugin_t *plugin = (clap_plugin_t *)(plugin_data + 1);\

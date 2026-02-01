@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct cdsp_app cdsp_app_t;
@@ -18,6 +19,7 @@ typedef struct cdsp_app {
   double sample_rate;
   uint32_t min_frames_count;
   uint32_t max_frames_count;
+  bool active;
   void *_plugin; // 
                  
   void (*init)(cdsp_app_t*);

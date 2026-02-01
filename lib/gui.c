@@ -17,6 +17,7 @@ PuglStatus cdsp_gui_event_handler(PuglView *view, const PuglEvent *event)
 
 void cdsp_gui_init(cdsp_app_t* app)
 {
+  printf("");
   if (app->type == CDSP_STANDALONE_APP_TYPE) {
     app->gui->world = puglNewWorld(PUGL_PROGRAM, 0);
   } else if (app->type == CDSP_PLUGIN_APP_TYPE) {

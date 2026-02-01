@@ -2,6 +2,7 @@
 #include <clap/ext/gui.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "app.h"
 #include "clap-adapters.h"
@@ -33,6 +34,8 @@ void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin)
   cdsp_clap_free_features((cdsp_clap_package_t*)plugin->plugin_data);
   free((void*)plugin->plugin_data);
   free((void*)plugin);
+  printf("we're free\n");
+  fflush(stdout);
 }
 
 bool cdsp_clap_plugin_activate(const struct clap_plugin *plugin,
@@ -44,11 +47,15 @@ bool cdsp_clap_plugin_activate(const struct clap_plugin *plugin,
   app->sample_rate = sample_rate;
   app->min_frames_count = min_frames_count;
   app->max_frames_count = max_frames_count;
+  app->active = true;
   return true;
 }
 
 void cdsp_clap_plugin_deactivate(const struct clap_plugin *plugin) 
 {
+  cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
+  app->active = false;
+  printf("deactivate\n");
 }
 
 bool cdsp_clap_plugin_start_processing(const struct clap_plugin *plugin) 
@@ -81,15 +88,21 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
     }
   }
 
+  printf("process!\n");
+
   return CLAP_PROCESS_CONTINUE;
 }
 
 const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, const char *id) 
 {
-
-  if (strcmp(id, CLAP_EXT_GUI)) {
-    return NULL;
+  cdsp_clap_feature_t* features = ((cdsp_clap_package_t*)plugin->plugin_data)->features;
+  size_t features_length = ((cdsp_clap_package_t*)plugin->plugin_data)->features_length;
+  for (size_t i = 0; i < features_length; i++) {
+    if (strcmp(features[i].name, CLAP_EXT_GUI)) {
+      return features[i].feature;
+    }
   }
+
   return NULL;
 }
 

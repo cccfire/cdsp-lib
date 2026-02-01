@@ -69,10 +69,12 @@ set(PUGL_SOURCES
   ${PUGL_BACKEND_SOURCES}
 )
 
-add_library(pugl SHARED ${PUGL_SOURCES})
+add_library(pugl STATIC ${PUGL_SOURCES})
 target_include_directories(pugl PRIVATE
   ${PUGL_INCLUDE_DIR}
 )
+target_compile_definitions(pugl PUBLIC PUGL_STATIC)
+
 target_link_libraries(pugl ${CAIRO_LIB} OpenGL::GL)
 
 if(WIN32)
@@ -87,10 +89,11 @@ target_include_directories(cdsp-lib PRIVATE
 )
 target_link_libraries(cdsp-lib PRIVATE ${CAIRO_LIB} OpenGL::GL pugl)
 add_dependencies(cdsp-lib copy_headers)
+target_compile_definitions(cdsp-lib PUBLIC PUGL_STATIC)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
-
-target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
+target_compile_definitions(${PROJECT_NAME} PUBLIC PUGL_STATIC)
+target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL)
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${PUGL_INCLUDE_DIR}
@@ -100,11 +103,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # Standalone executable target
 add_executable(${PROJECT_NAME}_standalone src/main.c)
 target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE)
-target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap ${CAIRO_LIB} OpenGL::GL pugl)
+target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap ${CAIRO_LIB} OpenGL::GL )
 target_include_directories(${PROJECT_NAME}_standalone PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/lib
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${PUGL_INCLUDE_DIR}
+  ${CAIRO_INCLUDE_DIR}
 )
 
 if(APPLE)

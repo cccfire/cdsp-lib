@@ -7,6 +7,7 @@
 
 typedef struct cdsp_gui cdsp_gui_t;
 typedef struct cdsp_gui {
+  void *data;
   PuglWorld* world;
   PuglView* view;
 
@@ -18,7 +19,6 @@ typedef struct cdsp_gui {
   uint16_t min_height;
   uint16_t default_width;
   uint16_t default_height;
-  void *data;
 
   void (*init) (cdsp_app_t*);
   void (*destroy) (cdsp_app_t*);

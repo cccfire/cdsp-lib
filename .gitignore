@@ -3,3 +3,4 @@ clap-host.exe
 build/
 include/
 .claude/
+*.clap

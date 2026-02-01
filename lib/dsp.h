@@ -38,7 +38,7 @@ typedef struct cdsp_process_data {
 
 typedef struct cdsp_dsp cdsp_dsp_t;
 typedef struct cdsp_dsp {
-  void *data;
+  void *ctx;
 
   void (*init) (cdsp_app_t*);
   void (*start_processing) (cdsp_app_t*);
