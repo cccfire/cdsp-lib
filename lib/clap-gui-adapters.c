@@ -13,7 +13,7 @@
 bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api, bool is_floating)
 {
   if (is_floating)
-    return false;
+    return true;
 #if IS_MAC
   if (strcmp(api, CLAP_WINDOW_API_COCOA) == 0)
     return true;

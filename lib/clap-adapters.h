@@ -33,7 +33,6 @@ bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
   cdsp_clap_package_t* plugin_data = ((cdsp_clap_package_t*)plugin->plugin_data);\
   plugin_data->app = app;\
   plugin_data->features = cdsp_clap_generate_features_from_app(app, &plugin_data->features_length);\
-  printf("Hello from Pluginit\n");\
   return true;\
 }\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
