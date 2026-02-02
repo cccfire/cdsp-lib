@@ -13,28 +13,37 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
-        
+    - name: Cache vcpkg
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ github.workspace }}/vcpkg
+          ${{ github.workspace }}/build/vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
+          
     - name: Install vcpkg
       run: |
-        git clone https://github.com/Microsoft/vcpkg.git
-        cd vcpkg
-        ./bootstrap-vcpkg.sh
+        if [! -d "vcpkg/.git"]; then
+          git clone https://github.com/Microsoft/vcpkg.git
+          cd vcpkg
+          ./bootstrap-vcpkg.sh
+        fi
       shell: bash
-      if: runner.os != 'Windows'
+      if: runner.os != 'Windows' 
       
     - name: Install vcpkg (Windows)
       run: |
-        git clone https://github.com/Microsoft/vcpkg.git
-        cd vcpkg
-        .\bootstrap-vcpkg.bat
+        if [! -d "vcpkg/.git"]; then
+          git clone https://github.com/Microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
+        fi
       if: runner.os == 'Windows'
       
-    - name: Install dependencies
-      run: |
-        ./vcpkg/vcpkg install cairo
-        ./vcpkg/vcpkg install opengl
-      shell: bash
-      if: runner.os != 'Windows'
-      
     - name: Build
-      run: cmake --preset=vcpkg && cmake --build build
+      run: |
+        cd ${{ github.workspace }} 
+        cmake --preset=vcpkg
+        cmake --build build
