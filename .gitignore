@@ -6,5 +6,6 @@ include/
 .claude/
 *.clap
 vcpkg-manifest-install.log
+.vs/
 
 CMakeUserPresets.json
