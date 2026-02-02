@@ -1,0 +1,40 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        ./bootstrap-vcpkg.sh
+      shell: bash
+      if: runner.os != 'Windows'
+      
+    - name: Install vcpkg (Windows)
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        .\bootstrap-vcpkg.bat
+      if: runner.os == 'Windows'
+      
+    - name: Install dependencies
+      run: |
+        ./vcpkg/vcpkg install cairo
+        ./vcpkg/vcpkg install opengl
+      shell: bash
+      if: runner.os != 'Windows'
+      
+    - name: Build
+      run: cmake --preset=vcpkg && cmake --build build
