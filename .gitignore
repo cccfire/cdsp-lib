@@ -1,6 +1,11 @@
 *.swp
 clap-host.exe
+vcpkg_installed/
 build/
 include/
 .claude/
 *.clap
+vcpkg-manifest-install.log
+.vs/
+
+CMakeUserPresets.json

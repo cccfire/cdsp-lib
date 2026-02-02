@@ -8,11 +8,10 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
-find_library(CAIRO_LIB cairo PATHS C:/lib)
-set(CAIRO_DIR "${CMAKE_SOURCE_DIR}/external/cairo")
-set(CAIRO_INCLUDE_DIR 
-  "${CAIRO_DIR}/src"
-  "${CAIRO_DIR}/build/src" )
+set(CMAKE_FIND_DEBUG_MODE OFF)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+find_package(cairo REQUIRED)
 
 find_package(OpenGL REQUIRED)
 
@@ -31,14 +30,14 @@ file(GLOB LIBSOURCES
 file(GLOB LIB_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.h")
 
 add_custom_target(copy_headers
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/include/cdsp
-  )
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/include/cdsp
+)
 
-  foreach(header ${LIB_HEADERS})
-      add_custom_command(TARGET copy_headers POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${header} ${CMAKE_SOURCE_DIR}/include/cdsp/
-              )
-            endforeach()
+foreach(header ${LIB_HEADERS})
+  add_custom_command(TARGET copy_headers POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${header} ${CMAKE_SOURCE_DIR}/include/cdsp/
+  )
+endforeach()
 
 
 # Pugl vendored directory
@@ -58,10 +57,6 @@ endif()
 
 set(PUGL_BACKEND_SOURCES "")
 
-# claude says that for Cairo:
-# list(APPEND PUGL_BACKEND_SOURCES "${PUGL_DIR}/src/cairo.c")
-# no clue if it works
-
 set(PUGL_SOURCES
   ${PUGL_DIR}/src/common.c
   ${PUGL_DIR}/src/internal.c
@@ -75,7 +70,7 @@ target_include_directories(pugl PRIVATE
 )
 target_compile_definitions(pugl PUBLIC PUGL_STATIC)
 
-target_link_libraries(pugl ${CAIRO_LIB} OpenGL::GL)
+target_link_libraries(pugl cairo::cairo OpenGL::GL)
 
 if(WIN32)
   target_link_libraries(pugl dwmapi)
@@ -85,31 +80,30 @@ add_library(cdsp-lib STATIC ${LIBSOURCES})
 target_include_directories(cdsp-lib PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
   ${PUGL_INCLUDE_DIR}
-  ${CAIRO_INCLUDE_DIR}
+  ${cairo_INCLUDE_DIR}
 )
-target_link_libraries(cdsp-lib PRIVATE ${CAIRO_LIB} OpenGL::GL pugl)
+target_link_libraries(cdsp-lib PRIVATE cairo::cairo OpenGL::GL pugl)
 add_dependencies(cdsp-lib copy_headers)
 target_compile_definitions(cdsp-lib PUBLIC PUGL_STATIC)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC PUGL_STATIC)
-target_link_libraries(${PROJECT_NAME} cdsp-lib clap ${CAIRO_LIB} OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} cdsp-lib clap cairo::cairo OpenGL::GL)
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${PUGL_INCLUDE_DIR}
-  ${CAIRO_INCLUDE_DIR}
+  ${cairo_INCLUDE_DIR}
 )
 
 # Standalone executable target
 add_executable(${PROJECT_NAME}_standalone src/main.c)
 target_compile_definitions(${PROJECT_NAME}_standalone PRIVATE)
-target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap ${CAIRO_LIB} OpenGL::GL )
+target_link_libraries(${PROJECT_NAME}_standalone cdsp-lib clap cairo::cairo OpenGL::GL )
 target_include_directories(${PROJECT_NAME}_standalone PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${PUGL_INCLUDE_DIR}
-  ${CAIRO_INCLUDE_DIR}
 )
 
 if(APPLE)
