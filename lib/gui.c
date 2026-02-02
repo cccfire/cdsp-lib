@@ -37,6 +37,14 @@ void cdsp_gui_init(cdsp_app_t* app)
   puglSetSizeHint(app->gui->view, PUGL_MIN_ASPECT, 1, 1);
   puglSetSizeHint(app->gui->view, PUGL_MAX_ASPECT, 16, 9);
 
+  // Set up opengl backend
+  puglSetBackend(app->gui->view, puglGlBackend());
+  puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MAJOR, 3);
+  puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MINOR, 3);
+  puglSetViewHint(app->gui->view,
+      PUGL_CONTEXT_PROFILE,
+      PUGL_OPENGL_COMPATIBILITY_PROFILE);
+
   PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
 
   cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, area.width, area.height);
@@ -53,6 +61,11 @@ void cdsp_gui_destroy(cdsp_app_t* app)
     cairo_destroy(app->gui->cairo_ctx);
   puglUnrealize(app->gui->view);
   puglFreeWorld(app->gui->world);
+}
+
+void cdsp_gui_update(cdsp_app_t* app)
+{
+  puglUpdate(app->gui->world, (double)0.0);
 }
 
 bool cdsp_gui_set_scale(cdsp_app_t* app, double scale)

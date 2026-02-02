@@ -22,6 +22,7 @@ typedef struct cdsp_gui {
 
   void (*init) (cdsp_app_t*);
   void (*destroy) (cdsp_app_t*);
+  void (*update) (cdsp_app_t*);
 
   bool should_preserve_aspect_ratio;
 } cdsp_gui_t;

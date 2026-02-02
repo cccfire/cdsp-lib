@@ -103,6 +103,8 @@ const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, con
 
 void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin) 
 {
+  cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
+  app->update(app);
 }
 
 uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_factory *factory) 

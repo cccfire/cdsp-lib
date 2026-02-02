@@ -22,8 +22,9 @@ typedef struct cdsp_app {
   bool active;
   void *_plugin; // 
                  
-  void (*init)(cdsp_app_t*);
-  void (*destroy)(cdsp_app_t*); 
+  void (*init) (cdsp_app_t*);
+  void (*destroy) (cdsp_app_t*); 
+  void (*update) (cdsp_app_t*); 
 
   CDSP_APP_TYPE_T type;
 } cdsp_app_t;
