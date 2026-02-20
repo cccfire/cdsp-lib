@@ -41,6 +41,8 @@ endforeach()
 
 find_package(cmocka CONFIG REQUIRED)
 
+# Enable testing
+enable_testing()
 
 # Pugl vendored directory
 set(PUGL_DIR "${CMAKE_SOURCE_DIR}/external/pugl")
@@ -169,3 +171,57 @@ else()
   target_compile_definitions(${PROJECT_NAME} PRIVATE IS_WIN=1)
   set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".clap" PREFIX "")
 endif()
+
+# ============================================================================
+# Unit Tests (cmocka)
+# ============================================================================
+
+# Common test include directories and link libraries
+set(TEST_INCLUDE_DIRS
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/clap/include
+  ${PUGL_INCLUDE_DIR}
+  ${cairo_INCLUDE_DIR}
+)
+
+# Test: app module
+add_executable(test_app tests/test_app.c)
+target_include_directories(test_app PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_app PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_app PRIVATE PUGL_STATIC)
+add_test(NAME test_app COMMAND test_app)
+
+# Test: dsp module
+add_executable(test_dsp tests/test_dsp.c)
+target_include_directories(test_dsp PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_dsp PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_dsp PRIVATE PUGL_STATIC)
+add_test(NAME test_dsp COMMAND test_dsp)
+
+# Test: clap adapters
+add_executable(test_clap_adapters tests/test_clap_adapters.c)
+target_include_directories(test_clap_adapters PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_clap_adapters PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_clap_adapters PRIVATE PUGL_STATIC)
+add_test(NAME test_clap_adapters COMMAND test_clap_adapters)
+
+# Test: clap features adapters
+add_executable(test_clap_features tests/test_clap_features.c)
+target_include_directories(test_clap_features PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_clap_features PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_clap_features PRIVATE PUGL_STATIC)
+add_test(NAME test_clap_features COMMAND test_clap_features)
+
+# Test: clap gui adapters
+add_executable(test_clap_gui_adapters tests/test_clap_gui_adapters.c)
+target_include_directories(test_clap_gui_adapters PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_clap_gui_adapters PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_clap_gui_adapters PRIVATE PUGL_STATIC)
+if(WIN32)
+  target_compile_definitions(test_clap_gui_adapters PRIVATE IS_WIN=1)
+elseif(APPLE)
+  target_compile_definitions(test_clap_gui_adapters PRIVATE IS_MAC=1)
+else()
+  target_compile_definitions(test_clap_gui_adapters PRIVATE IS_LINUX=1)
+endif()
+add_test(NAME test_clap_gui_adapters COMMAND test_clap_gui_adapters)
