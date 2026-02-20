@@ -10,7 +10,7 @@
 #include <cdsp/clap-adapters.h>
 #include <cdsp/clap-features-adapters.h>
 
-void empty_fun(cdsp_app_t* app)
+void _empty_fun(cdsp_app_t* app)
 {
 }
 
@@ -23,18 +23,18 @@ void create_minimal_app(cdsp_app_t* app)
   gui->default_height = 480;
   gui->default_width = 640;
   gui->should_preserve_aspect_ratio = true;
-  gui->init = empty_fun;
-  gui->destroy = empty_fun;
+  gui->init = _empty_fun;
+  gui->destroy = _empty_fun;
 
   cdsp_dsp_t* dsp = (cdsp_dsp_t*) calloc(1, sizeof(cdsp_dsp_t));
-  dsp->init = empty_fun;
-  dsp->destroy = empty_fun;
+  dsp->init = _empty_fun;
+  dsp->destroy = _empty_fun;
 
   app->gui = gui;
   app->dsp = dsp;
 
-  app->init = empty_fun;
-  app->destroy = empty_fun;
+  app->init = _empty_fun;
+  app->destroy = _empty_fun;
 }
 
 CDSP_PLUGIN_DESCRIPTOR(
