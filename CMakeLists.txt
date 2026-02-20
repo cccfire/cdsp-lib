@@ -39,6 +39,8 @@ foreach(header ${LIB_HEADERS})
   )
 endforeach()
 
+find_package(cmocka CONFIG REQUIRED)
+
 
 # Pugl vendored directory
 set(PUGL_DIR "${CMAKE_SOURCE_DIR}/external/pugl")
