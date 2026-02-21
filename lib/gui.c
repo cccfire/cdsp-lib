@@ -10,8 +10,26 @@
 #include "gui.h"
 
 // pugl event handler
-PuglStatus cdsp_gui_event_handler(PuglView *view, const PuglEvent *event)
+PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
 {
+  cdsp_app_t* app = (cdsp_app_t*)puglGetHandle(view);
+  switch (event->type) {
+    case PUGL_REALIZE:
+      break;
+    case PUGL_UNREALIZE:
+      break;
+    case PUGL_CONFIGURE:
+      break;
+    case PUGL_EXPOSE:
+
+      break;
+    case PUGL_CLOSE:
+      break;
+    case PUGL_BUTTON_PRESS:
+      break;
+    default:
+      break;
+  }
   return PUGL_SUCCESS;
 }
 
@@ -37,7 +55,16 @@ void cdsp_gui_init(cdsp_app_t* app)
   puglSetSizeHint(app->gui->view, PUGL_MIN_ASPECT, 1, 1);
   puglSetSizeHint(app->gui->view, PUGL_MAX_ASPECT, 16, 9);
 
+  puglSetEventFunc(app->gui->view, &cdsp_pugl_on_event);
+
   PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
+
+  puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MAJOR, 3);
+  puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MINOR, 3);
+  puglSetViewHint(app->gui->view, PUGL_CONTEXT_PROFILE, PUGL_OPENGL_COMPATIBILITY_PROFILE);
+  puglSetBackend(app->gui->view, puglGlBackend());
+
+  puglSetHandle(app->gui->view, app);
 
   cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, area.width, area.height);
   app->gui->cairo_ctx = cairo_create(cairo_surface);
@@ -102,6 +129,11 @@ void cdsp_gui_set_title(cdsp_app_t* app, const char *title)
   puglSetViewString(app->gui->view, PUGL_WINDOW_TITLE, "pugl window");
 }
 
+void cdsp_gui_update(cdsp_app_t* app)
+{
+  puglUpdate(app->gui->world, 0.0);
+}
+
 bool cdsp_gui_show(cdsp_app_t* app)
 {
   PuglStatus status = puglShow(app->gui->view, PUGL_SHOW_RAISE);
@@ -113,4 +145,3 @@ bool cdsp_gui_hide(cdsp_app_t* app)
   PuglStatus status = puglHide(app->gui->view);
   return status == PUGL_SUCCESS;
 }
-

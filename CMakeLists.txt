@@ -53,13 +53,14 @@ set(PUGL_INCLUDE_DIR "${PUGL_DIR}/include")
 # Select platform implementation
 if(APPLE)
   set(PUGL_PLATFORM_SOURCE "${PUGL_DIR}/src/mac.m")
+  set(PUGL_BACKEND_SOURCES "${PUGL_DIR}/src/mac_gl.m")
 elseif(WIN32)
   set(PUGL_PLATFORM_SOURCE "${PUGL_DIR}/src/win.c")
+  set(PUGL_BACKEND_SOURCES "${PUGL_DIR}/src/win_gl.c")
 else()
   set(PUGL_PLATFORM_SOURCE "${PUGL_DIR}/src/x11.c")
+  set(PUGL_BACKEND_SOURCES "${PUGL_DIR}/src/x11_gl.c")
 endif()
-
-set(PUGL_BACKEND_SOURCES "")
 
 set(PUGL_SOURCES
   ${PUGL_DIR}/src/common.c
