@@ -20,6 +20,11 @@ typedef struct cdsp_gui {
   uint16_t default_width;
   uint16_t default_height;
 
+  void (*setup_opengl) (cdsp_app_t*);
+  void (*teardown_opengl) (cdsp_app_t*);
+
+  void (*draw) (cdsp_app_t*);
+
   void (*init) (cdsp_app_t*);
   void (*destroy) (cdsp_app_t*);
 

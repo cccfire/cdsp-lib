@@ -15,13 +15,15 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
   cdsp_app_t* app = (cdsp_app_t*)puglGetHandle(view);
   switch (event->type) {
     case PUGL_REALIZE:
+      app->gui->setup_opengl(app);
       break;
     case PUGL_UNREALIZE:
+      app->gui->teardown_opengl(app);
       break;
     case PUGL_CONFIGURE:
       break;
     case PUGL_EXPOSE:
-
+      app->gui->draw(app);
       break;
     case PUGL_CLOSE:
       break;
@@ -115,12 +117,20 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
 bool cdsp_gui_set_parent(cdsp_app_t* app, void *window)
 {
   PuglStatus status = puglSetParent(app->gui->view, (PuglNativeView)window);
+  if (status) {
+      fprintf(stderr, "Error setting parent (%s)\n", puglStrerror(status));
+      fflush(stderr);
+  }
   return status == PUGL_SUCCESS;
 }
 
 bool cdsp_gui_set_transient(cdsp_app_t* app, void *window)
 {
   PuglStatus status = puglSetTransientParent(app->gui->view, (PuglNativeView)window);
+  if (status) {
+      fprintf(stderr, "Error setting transient parent (%s)\n", puglStrerror(status));
+      fflush(stderr);
+  }
   return status == PUGL_SUCCESS;
 }
 
@@ -137,6 +147,7 @@ void cdsp_gui_update(cdsp_app_t* app)
 bool cdsp_gui_show(cdsp_app_t* app)
 {
   PuglStatus status = puglShow(app->gui->view, PUGL_SHOW_RAISE);
+  printf("show %d\n", (int) (status));
   return status == PUGL_SUCCESS;
 }
 
