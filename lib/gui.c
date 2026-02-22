@@ -131,13 +131,11 @@ void cdsp_gui_destroy(cdsp_app_t* app)
 
 bool cdsp_gui_set_scale(cdsp_app_t* app, double scale)
 {
-  printf("set scale\n");
   return false;
 }
 
 bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 {
-  printf("get size\n");
   PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
   *width = (uint32_t)area.width;
   *height = (uint32_t)area.height;
@@ -146,7 +144,6 @@ bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 
 bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 {
-  printf("adjust size\n");
   if (!app->gui->should_preserve_aspect_ratio) return true;
 
   float wratio = (float)*width/(float)app->gui->aspect_ratio_width;
@@ -158,11 +155,16 @@ bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 
 bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
 {
-  printf("set size\n");
-  PuglStatus status = puglSetSizeHint(app->gui->view, PUGL_DEFAULT_SIZE, width, height);
+  PuglStatus status = puglSetSizeHint(app->gui->view, PUGL_CURRENT_SIZE, width, height);
   if (status) {
       fprintf(stderr, "Error setting size (%s)\n", puglStrerror(status));
       fflush(stderr);
+  } else {
+    if (app->gui->cairo_ctx)
+      cairo_destroy(app->gui->cairo_ctx);
+    cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
+    app->gui->cairo_ctx = cairo_create(cairo_surface);
+    cairo_surface_destroy(cairo_surface);
   }
   return status == PUGL_SUCCESS;
 }
