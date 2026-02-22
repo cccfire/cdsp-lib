@@ -73,6 +73,7 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
       glEnd();
       break;
     case PUGL_CLOSE:
+      app->active = false;
       break;
     case PUGL_BUTTON_PRESS:
       break;

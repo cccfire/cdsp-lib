@@ -41,6 +41,7 @@ void create_minimal_app(cdsp_app_t* app)
 {
   app->name = "minimal app";
   app->type = CDSP_PLUGIN_APP_TYPE;
+  app->active = true;
 
   cdsp_gui_t* gui = (cdsp_gui_t*) calloc(1, sizeof(cdsp_gui_t));
   gui->default_height = 480;
