@@ -1,8 +1,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include <clap/clap.h>
+#include <pugl/pugl.h>
+#include <pugl/gl.h>
+#include <cairo.h>
 
 #include <cdsp/app.h>
 #include <cdsp/gui.h>
@@ -10,19 +15,40 @@
 #include <cdsp/clap-adapters.h>
 #include <cdsp/clap-features-adapters.h>
 
-void _empty_fun(cdsp_app_t* app)
+static void _setup_opengl(cdsp_app_t* app)
 {
 }
+
+static void _teardown_opengl(cdsp_app_t* app)
+{
+}
+
+static void _draw(cdsp_app_t* app)
+{
+
+  uint32_t width, height;
+  cdsp_gui_get_size(app, &width, &height);
+  //printf("width: %d, height: %d\n", width, height);
+  cairo_t *cr = app->gui->cairo_ctx;
+
+  cairo_set_source_rgb(cr, 0.5, 0.05, 0.05);
+  cairo_paint(cr);
+}
+
+static void _empty_fun(cdsp_app_t* app) { (void)app; }
 
 void create_minimal_app(cdsp_app_t* app)
 {
   app->name = "minimal app";
   app->type = CDSP_PLUGIN_APP_TYPE;
-  
+
   cdsp_gui_t* gui = (cdsp_gui_t*) calloc(1, sizeof(cdsp_gui_t));
   gui->default_height = 480;
   gui->default_width = 640;
   gui->should_preserve_aspect_ratio = true;
+  gui->setup_opengl = _setup_opengl;
+  gui->teardown_opengl = _teardown_opengl;
+  gui->draw = _draw;
   gui->init = _empty_fun;
   gui->destroy = _empty_fun;
 

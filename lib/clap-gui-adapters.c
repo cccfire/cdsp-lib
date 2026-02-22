@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <assert.h>
 
 #include <clap/clap.h>
@@ -124,6 +126,7 @@ bool cdsp_gui_clap_adjust_size(const clap_plugin_t *plugin, uint32_t *width, uin
 
 bool cdsp_gui_clap_set_size(const clap_plugin_t *plugin, uint32_t width, uint32_t height)
 {
+  printf("1 size\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   return cdsp_gui_set_size(app, width, height);
@@ -133,14 +136,31 @@ bool cdsp_gui_clap_set_parent(const clap_plugin_t *plugin, const clap_window_t *
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
-  return cdsp_gui_set_parent(app, (const void*) window);
+  if (window->api == CLAP_WINDOW_API_WIN32)
+    return cdsp_gui_set_parent(app, (const void*) window->win32);
+  else if (window->api == CLAP_WINDOW_API_COCOA)
+    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
+  else if (window->api == CLAP_WINDOW_API_X11)
+    return cdsp_gui_set_parent(app, (const void*) (uintptr_t)window->x11);
+  else
+    return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
 
 bool cdsp_gui_clap_set_transient(const clap_plugin_t *plugin, const clap_window_t *window)
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
-  return cdsp_gui_set_transient(app, (const void*) window);
+
+  // not a bug here that we call set_parent instead of set_transient!
+  // this behaves better
+  if (window->api == CLAP_WINDOW_API_WIN32)
+    return cdsp_gui_set_parent(app, (const void*) window->win32);
+  else if (window->api == CLAP_WINDOW_API_COCOA)
+    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
+  else if (window->api == CLAP_WINDOW_API_X11)
+    return cdsp_gui_set_parent(app, (const void*) (uintptr_t)window->x11);
+  else
+    return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
 
 void cdsp_gui_clap_suggest_title(const clap_plugin_t *plugin, const char *title)
@@ -154,6 +174,11 @@ bool cdsp_gui_clap_show(const clap_plugin_t *plugin)
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
+  clap_host_t* host = (clap_host_t*)((cdsp_clap_package_t*)plugin->plugin_data)->host;
+  clap_host_gui_t* host_gui = (clap_host_gui_t*)host->get_extension(host, CLAP_EXT_GUI);
+
+  host_gui->request_resize(host, app->gui->default_width, app->gui->default_height);
+
   return cdsp_gui_show(app);
 }
 
