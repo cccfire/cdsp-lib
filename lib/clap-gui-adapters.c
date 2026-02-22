@@ -135,11 +135,11 @@ bool cdsp_gui_clap_set_parent(const clap_plugin_t *plugin, const clap_window_t *
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   if (window->api == CLAP_WINDOW_API_WIN32)
-    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
-  else if (window->api == CLAP_WINDOW_API_COCOA)
-    return cdsp_gui_set_parent(app, (const void*) window->x11);
-  else if (window->api == CLAP_WINDOW_API_X11)
     return cdsp_gui_set_parent(app, (const void*) window->win32);
+  else if (window->api == CLAP_WINDOW_API_COCOA)
+    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
+  else if (window->api == CLAP_WINDOW_API_X11)
+    return cdsp_gui_set_parent(app, (const void*) window->x11);
   else
     return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
@@ -152,11 +152,11 @@ bool cdsp_gui_clap_set_transient(const clap_plugin_t *plugin, const clap_window_
   // not a bug here that we call set_parent instead of set_transient!
   // this behaves better
   if (window->api == CLAP_WINDOW_API_WIN32)
-    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
-  else if (window->api == CLAP_WINDOW_API_COCOA)
-    return cdsp_gui_set_parent(app, (const void*) window->x11);
-  else if (window->api == CLAP_WINDOW_API_X11)
     return cdsp_gui_set_parent(app, (const void*) window->win32);
+  else if (window->api == CLAP_WINDOW_API_COCOA)
+    return cdsp_gui_set_parent(app, (const void*) window->cocoa);
+  else if (window->api == CLAP_WINDOW_API_X11)
+    return cdsp_gui_set_parent(app, (const void*) window->x11);
   else
     return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
