@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <assert.h>
 
 #include <clap/clap.h>
@@ -139,7 +140,7 @@ bool cdsp_gui_clap_set_parent(const clap_plugin_t *plugin, const clap_window_t *
   else if (window->api == CLAP_WINDOW_API_COCOA)
     return cdsp_gui_set_parent(app, (const void*) window->cocoa);
   else if (window->api == CLAP_WINDOW_API_X11)
-    return cdsp_gui_set_parent(app, (const void*) window->x11);
+    return cdsp_gui_set_parent(app, (const void*) (uintptr_t)window->x11);
   else
     return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
@@ -156,7 +157,7 @@ bool cdsp_gui_clap_set_transient(const clap_plugin_t *plugin, const clap_window_
   else if (window->api == CLAP_WINDOW_API_COCOA)
     return cdsp_gui_set_parent(app, (const void*) window->cocoa);
   else if (window->api == CLAP_WINDOW_API_X11)
-    return cdsp_gui_set_parent(app, (const void*) window->x11);
+    return cdsp_gui_set_parent(app, (const void*) (uintptr_t)window->x11);
   else
     return cdsp_gui_set_parent(app, (const void*) window->ptr);
 }
