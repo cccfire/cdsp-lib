@@ -32,7 +32,7 @@ void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin)
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_destroy_app(app);
   free(app);
-  cdsp_clap_free_features((cdsp_clap_package_t*)plugin->plugin_data);
+  cdsp_clap_free_extensions((cdsp_clap_package_t*)plugin->plugin_data);
   free((void*)plugin->plugin_data);
 }
 
@@ -91,11 +91,11 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
 
 const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, const char *id) 
 {
-  cdsp_clap_feature_t* features = ((cdsp_clap_package_t*)plugin->plugin_data)->features;
-  size_t features_length = ((cdsp_clap_package_t*)plugin->plugin_data)->features_length;
-  for (size_t i = 0; i < features_length; i++) {
-    if (!strcmp(features[i].name, id)) {
-      return features[i].feature;
+  cdsp_clap_extension_t* extensions = ((cdsp_clap_package_t*)plugin->plugin_data)->extensions;
+  size_t extensions_length = ((cdsp_clap_package_t*)plugin->plugin_data)->extensions_length;
+  for (size_t i = 0; i < extensions_length; i++) {
+    if (!strcmp(extensions[i].name, id)) {
+      return extensions[i].extension;
     }
   }
 

@@ -13,7 +13,7 @@
 #include <cdsp/gui.h>
 #include <cdsp/dsp.h>
 #include <cdsp/clap-adapters.h>
-#include <cdsp/clap-features-adapters.h>
+#include <cdsp/clap-extensions-adapters.h>
 
 static void _setup_opengl(cdsp_app_t* app)
 {
