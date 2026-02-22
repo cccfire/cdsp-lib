@@ -32,7 +32,7 @@ bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
   create_app(app);\
   cdsp_clap_package_t* plugin_data = ((cdsp_clap_package_t*)plugin->plugin_data);\
   plugin_data->app = app;\
-  plugin_data->features = cdsp_clap_generate_features_from_app(app, &plugin_data->features_length);\
+  plugin_data->extensions = cdsp_clap_generate_extensions_from_app(app, &plugin_data->extensions_length);\
   return true;\
 }\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
@@ -93,16 +93,16 @@ CLAP_EXPORT const clap_plugin_entry_t clap_entry = { \
     .get_factory = cdsp_clap_entry_get_factory \
     }
 
-typedef struct cdsp_clap_feature {
+typedef struct cdsp_clap_extension {
   const char* name;
-  void* feature;
-} cdsp_clap_feature_t;
+  void* extension;
+} cdsp_clap_extension_t;
 
 typedef struct cdsp_clap_package {
   cdsp_app_t* app;
   const clap_host_t* host;
-  size_t features_length;
-  cdsp_clap_feature_t* features;
+  size_t extensions_length;
+  cdsp_clap_extension_t* extensions;
 } cdsp_clap_package_t;
 
 const clap_plugin_entry_t cdsp_create_clap_components();

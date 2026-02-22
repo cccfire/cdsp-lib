@@ -207,11 +207,11 @@ target_compile_definitions(test_clap_adapters PRIVATE PUGL_STATIC)
 add_test(NAME test_clap_adapters COMMAND test_clap_adapters)
 
 # Test: clap features adapters
-add_executable(test_clap_features tests/test_clap_features.c)
-target_include_directories(test_clap_features PRIVATE ${TEST_INCLUDE_DIRS})
-target_link_libraries(test_clap_features PRIVATE cdsp-lib cmocka::cmocka)
-target_compile_definitions(test_clap_features PRIVATE PUGL_STATIC)
-add_test(NAME test_clap_features COMMAND test_clap_features)
+add_executable(test_clap_extensions tests/test_clap_extensions_adapters.c)
+target_include_directories(test_clap_extensions PRIVATE ${TEST_INCLUDE_DIRS})
+target_link_libraries(test_clap_extensions PRIVATE cdsp-lib cmocka::cmocka)
+target_compile_definitions(test_clap_extensions PRIVATE PUGL_STATIC)
+add_test(NAME test_clap_extensions COMMAND test_clap_extensions)
 
 # Test: clap gui adapters
 add_executable(test_clap_gui_adapters tests/test_clap_gui_adapters.c)

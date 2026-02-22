@@ -37,8 +37,8 @@ static cdsp_clap_package_t* create_test_package(void) {
 
     package->app = app;
     package->host = NULL;
-    package->features = NULL;
-    package->features_length = 0;
+    package->extensions = NULL;
+    package->extensions_length = 0;
 
     return package;
 }
@@ -70,8 +70,8 @@ static void test_clap_package_struct(void **state) {
     assert_non_null(package);
     assert_non_null(package->app);
     assert_null(package->host);
-    assert_null(package->features);
-    assert_int_equal(package->features_length, 0);
+    assert_null(package->extensions);
+    assert_int_equal(package->extensions_length, 0);
 
     cdsp_destroy_app(package->app);
     free(package->app);
@@ -222,7 +222,7 @@ static void test_plugin_process(void **state) {
     cleanup_test_plugin(plugin);
 }
 
-/* Test: plugin get extension with no features */
+/* Test: plugin get extension with no extensions */
 static void test_plugin_get_extension_none(void **state) {
     (void)state;
 
@@ -235,27 +235,27 @@ static void test_plugin_get_extension_none(void **state) {
     cleanup_test_plugin(plugin);
 }
 
-/* Test: plugin get extension with features */
+/* Test: plugin get extension with extensions */
 static void test_plugin_get_extension_found(void **state) {
     (void)state;
 
     cdsp_clap_package_t* package = create_test_package();
     clap_plugin_t* plugin = create_test_plugin(package);
 
-    /* Add a mock feature */
-    int mock_feature = 42;
-    cdsp_clap_feature_t* features = (cdsp_clap_feature_t*)calloc(1, sizeof(cdsp_clap_feature_t));
-    features[0].name = "test.feature";
-    features[0].feature = &mock_feature;
+    /* Add a mock extension */
+    int mock_extension = 42;
+    cdsp_clap_extension_t* extensions = (cdsp_clap_extension_t*)calloc(1, sizeof(cdsp_clap_extension_t));
+    extensions[0].name = "test.extension";
+    extensions[0].extension = &mock_extension;
 
-    package->features = features;
-    package->features_length = 1;
+    package->extensions = extensions;
+    package->extensions_length = 1;
 
-    const void* ext = cdsp_clap_plugin_get_extension(plugin, "test.feature");
+    const void* ext = cdsp_clap_plugin_get_extension(plugin, "test.extension");
     assert_non_null(ext);
-    assert_ptr_equal(ext, &mock_feature);
+    assert_ptr_equal(ext, &mock_extension);
 
-    free(features);
+    free(extensions);
     cleanup_test_plugin(plugin);
 }
 
