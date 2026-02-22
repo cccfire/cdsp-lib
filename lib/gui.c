@@ -9,21 +9,68 @@
 
 #include "gui.h"
 
+/* Cairo ARGB32 is stored as B,G,R,A in memory on little-endian; GL_BGRA matches. */
+#ifndef GL_BGRA
+#  define GL_BGRA 0x80E1
+#endif
+#ifndef GL_CLAMP_TO_EDGE
+#  define GL_CLAMP_TO_EDGE 0x812F
+#endif
+
 // pugl event handler
 PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
 {
   cdsp_app_t* app = (cdsp_app_t*)puglGetHandle(view);
   switch (event->type) {
     case PUGL_REALIZE:
+      glEnable(GL_TEXTURE_2D);
+      glGenTextures(1, &app->gui->texture);
+      glBindTexture(GL_TEXTURE_2D, app->gui->texture);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       app->gui->setup_opengl(app);
       break;
     case PUGL_UNREALIZE:
+      glDeleteTextures(1, &app->gui->texture);
       app->gui->teardown_opengl(app);
       break;
     case PUGL_CONFIGURE:
       break;
     case PUGL_EXPOSE:
       app->gui->draw(app);
+
+      cairo_t *cr = app->gui->cairo_ctx;
+      cairo_surface_t *surface = cairo_get_target(cr);
+      int w = cairo_image_surface_get_width(surface);
+      int h = cairo_image_surface_get_height(surface);
+      if (w <= 0 || h <= 0) return PUGL_SUCCESS;
+
+      /* --- Upload Cairo surface as GL texture --- */
+      cairo_surface_flush(surface);
+      unsigned char *data = cairo_image_surface_get_data(surface);
+
+      glBindTexture(GL_TEXTURE_2D, app->gui->texture);
+      /* GL_BGRA matches Cairo's native ARGB32 byte order on little-endian. */
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+                  GL_BGRA, GL_UNSIGNED_BYTE, data);
+
+      /* --- Blit fullscreen textured quad (fixed-function compat profile) ---
+      *
+      * UV layout: t=0 maps to the first row of data (Cairo top).
+      * NDC y=+1 is the top of the screen, so pair (y=+1, t=0) to avoid flip.
+      */
+      glClear(GL_COLOR_BUFFER_BIT);
+      glMatrixMode(GL_PROJECTION); glLoadIdentity();
+      glMatrixMode(GL_MODELVIEW);  glLoadIdentity();
+
+      glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f,  1.0f); /* top-left     */
+        glTexCoord2f(1.0f, 0.0f); glVertex2f( 1.0f,  1.0f); /* top-right    */
+        glTexCoord2f(1.0f, 1.0f); glVertex2f( 1.0f, -1.0f); /* bottom-right */
+        glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, -1.0f); /* bottom-left  */
+      glEnd();
       break;
     case PUGL_CLOSE:
       break;
@@ -59,8 +106,6 @@ void cdsp_gui_init(cdsp_app_t* app)
 
   puglSetEventFunc(app->gui->view, &cdsp_pugl_on_event);
 
-  PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
-
   puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MAJOR, 3);
   puglSetViewHint(app->gui->view, PUGL_CONTEXT_VERSION_MINOR, 3);
   puglSetViewHint(app->gui->view, PUGL_CONTEXT_PROFILE, PUGL_OPENGL_COMPATIBILITY_PROFILE);
@@ -68,7 +113,7 @@ void cdsp_gui_init(cdsp_app_t* app)
 
   puglSetHandle(app->gui->view, app);
 
-  cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, area.width, area.height);
+  cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, app->gui->default_width, app->gui->default_height);
   app->gui->cairo_ctx = cairo_create(cairo_surface);
   cairo_surface_destroy(cairo_surface);
   
@@ -86,11 +131,13 @@ void cdsp_gui_destroy(cdsp_app_t* app)
 
 bool cdsp_gui_set_scale(cdsp_app_t* app, double scale)
 {
+  printf("set scale\n");
   return false;
 }
 
 bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 {
+  printf("get size\n");
   PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
   *width = (uint32_t)area.width;
   *height = (uint32_t)area.height;
@@ -99,6 +146,7 @@ bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 
 bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 {
+  printf("adjust size\n");
   if (!app->gui->should_preserve_aspect_ratio) return true;
 
   float wratio = (float)*width/(float)app->gui->aspect_ratio_width;
@@ -110,7 +158,12 @@ bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
 
 bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
 {
+  printf("set size\n");
   PuglStatus status = puglSetSizeHint(app->gui->view, PUGL_DEFAULT_SIZE, width, height);
+  if (status) {
+      fprintf(stderr, "Error setting size (%s)\n", puglStrerror(status));
+      fflush(stderr);
+  }
   return status == PUGL_SUCCESS;
 }
 

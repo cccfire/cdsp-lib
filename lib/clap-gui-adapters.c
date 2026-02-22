@@ -126,6 +126,7 @@ bool cdsp_gui_clap_adjust_size(const clap_plugin_t *plugin, uint32_t *width, uin
 
 bool cdsp_gui_clap_set_size(const clap_plugin_t *plugin, uint32_t width, uint32_t height)
 {
+  printf("1 size\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   return cdsp_gui_set_size(app, width, height);
