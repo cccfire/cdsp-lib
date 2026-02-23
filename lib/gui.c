@@ -43,6 +43,7 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
         fflush(f);
         fclose(f);
       }
+      app->gui->realized = true;
       break;
     case PUGL_UNREALIZE:
       cdsp_log("PUGL UNREALIZE\n");
@@ -273,9 +274,7 @@ bool cdsp_gui_show(cdsp_app_t* app)
     fprintf(f, "Error showing (%s)\n", puglStrerror(status));
     fflush(f);
     fclose(f);
-  } else {
-    app->gui->realized = true;
-  }
+  } 
   puglObscureView(app->gui->view);
   return status == PUGL_SUCCESS;
 }
