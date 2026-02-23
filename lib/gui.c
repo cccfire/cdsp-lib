@@ -24,6 +24,7 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
   cdsp_app_t* app = (cdsp_app_t*)puglGetHandle(view);
   switch (event->type) {
     case PUGL_REALIZE:
+      cdsp_log("PUGL REALIZE\n");
       glEnable(GL_TEXTURE_2D);
       glGenTextures(1, &app->gui->texture);
       glBindTexture(GL_TEXTURE_2D, app->gui->texture);
@@ -32,14 +33,40 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       app->gui->setup_opengl(app);
+      PuglStatus status = puglObscureView(view);
+      if (status) {
+        fprintf(stderr, "Error obscuring view (%s)\n", puglStrerror(status));
+        fflush(stderr);
+        FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+        if (!f) return false;
+        fprintf(f, "Error obscuring view (%s)\n", puglStrerror(status));
+        fflush(f);
+        fclose(f);
+      }
       break;
     case PUGL_UNREALIZE:
+      cdsp_log("PUGL UNREALIZE\n");
       glDeleteTextures(1, &app->gui->texture);
       app->gui->teardown_opengl(app);
       break;
+    case PUGL_UPDATE:
+      cdsp_log("PUGL UPDATE\n");
+      status = puglObscureView(view);
+      if (status) {
+        fprintf(stderr, "Error obscuring view (%s)\n", puglStrerror(status));
+        fflush(stderr);
+        FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+        if (!f) return false;
+        fprintf(f, "Error obscuring view (%s)\n", puglStrerror(status));
+        fflush(f);
+        fclose(f);
+      }
+      break;
     case PUGL_CONFIGURE:
+      cdsp_log("PUGL CONFIGURE\n");
       break;
     case PUGL_EXPOSE:
+      cdsp_log("PUGL EXPOSE\n");
       app->gui->draw(app);
 
       cairo_t *cr = app->gui->cairo_ctx;
@@ -74,11 +101,14 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
       glEnd();
       break;
     case PUGL_CLOSE:
+      cdsp_log("PUGL CLOSE\n");
       app->active = false;
       break;
     case PUGL_BUTTON_PRESS:
+      cdsp_log("PUGL BUTTON PRESS\n");
       break;
     default:
+      cdsp_log("PUGL WE DO NOT KNOW\n");
       break;
   }
   return PUGL_SUCCESS;
@@ -135,7 +165,7 @@ void cdsp_gui_destroy(cdsp_app_t* app)
 
 bool cdsp_gui_set_scale(cdsp_app_t* app, double scale)
 {
-  return false;
+  return true;
 }
 
 bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
@@ -147,6 +177,7 @@ bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
   } else {
     *width = (uint32_t)app->gui->default_width;
     *height = (uint32_t)app->gui->default_height;
+    printf("%d, %d\n", *width, *height);
   }
   return true;
 }
@@ -180,6 +211,7 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
       cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
       app->gui->cairo_ctx = cairo_create(cairo_surface);
       cairo_surface_destroy(cairo_surface);
+      puglObscureView(app->gui->view);
     }
     return status == PUGL_SUCCESS;
   } else {
@@ -244,6 +276,7 @@ bool cdsp_gui_show(cdsp_app_t* app)
   } else {
     app->gui->realized = true;
   }
+  puglObscureView(app->gui->view);
   return status == PUGL_SUCCESS;
 }
 

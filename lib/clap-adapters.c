@@ -115,6 +115,8 @@ void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin)
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_update(app);
+  clap_host_t* host = (clap_host_t*)((cdsp_clap_package_t*)plugin->plugin_data)->host;
+  host->request_callback(host);
 }
 
 uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_factory *factory) 

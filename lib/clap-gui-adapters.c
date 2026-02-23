@@ -97,7 +97,7 @@ bool cdsp_gui_clap_set_scale(const clap_plugin_t *plugin, double scale)
   cdsp_gui_t* gui = app->gui;
 
   assert(app->gui);
-  return false;
+  return true;
 }
 
 bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height)
@@ -107,7 +107,7 @@ bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32
   cdsp_gui_t* gui = app->gui;
   cdsp_gui_get_size(app, width, height);
 
-  return false;
+  return true;
 }
 
 /**
@@ -202,6 +202,7 @@ bool cdsp_gui_clap_show(const clap_plugin_t *plugin)
   clap_host_gui_t* host_gui = (clap_host_gui_t*)host->get_extension(host, CLAP_EXT_GUI);
 
   host_gui->request_resize(host, app->gui->default_width, app->gui->default_height);
+  host->request_callback(host);
 
   return cdsp_gui_show(app);
 }
