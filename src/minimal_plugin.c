@@ -47,6 +47,7 @@ void create_minimal_app(cdsp_app_t* app)
   gui->default_height = 480;
   gui->default_width = 640;
   gui->should_preserve_aspect_ratio = true;
+  gui->realized = false;
   gui->setup_opengl = _setup_opengl;
   gui->teardown_opengl = _teardown_opengl;
   gui->draw = _draw;

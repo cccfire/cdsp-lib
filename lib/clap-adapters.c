@@ -7,6 +7,7 @@
 #include "app.h"
 #include "gui.h"
 #include "clap-adapters.h"
+#include "cdsp-debug-utils.h"
 
 // Plugin instance structure
 typedef struct {
@@ -102,7 +103,7 @@ const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, con
   size_t extensions_length = ((cdsp_clap_package_t*)plugin->plugin_data)->extensions_length;
   for (size_t i = 0; i < extensions_length; i++) {
     if (!strcmp(extensions[i].name, id)) {
-      cdsp_log("we found it");
+      cdsp_log("we found it\n");
       return extensions[i].extension;
     }
   }

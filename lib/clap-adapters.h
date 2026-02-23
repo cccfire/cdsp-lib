@@ -1,5 +1,4 @@
 #pragma once
-#include <stdio.h>
 
 #include <clap/clap.h>
 #include <clap/ext/gui.h>
@@ -149,11 +148,3 @@ const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(
 bool cdsp_clap_entry_init(const char *plugin_path);
 
 void cdsp_clap_entry_deinit(void);
-
-static void cdsp_log(const char* msg) {
-  FILE* f = fopen("C:\\cdsp_debug.log", "a");
-  if (!f) return;
-  fprintf(f, "%s\n", msg);
-  fflush(f);
-  fclose(f);
-}

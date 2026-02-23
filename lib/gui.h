@@ -30,7 +30,8 @@ typedef struct cdsp_gui {
   void (*init) (cdsp_app_t*);
   void (*destroy) (cdsp_app_t*);
 
-  bool should_preserve_aspect_ratio;
+  bool should_preserve_aspect_ratio : 1;
+  bool realized : 1;
 } cdsp_gui_t;
 
 PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event);

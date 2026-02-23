@@ -8,34 +8,36 @@
 
 #include "clap-adapters.h"
 #include "clap-gui-adapters.h"
+#include "cdsp-debug-utils.h"
 
 #include "app.h"
 #include "gui.h"
 
 bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api, bool is_floating)
 {
-  cdsp_log("gui is api supported");
+  cdsp_log("gui is api supported\n");
   cdsp_log(api);
+  cdsp_log("\n");
   if (is_floating)
     return true;
 #if IS_MAC
   if (strcmp(api, CLAP_WINDOW_API_COCOA) == 0) {
-    cdsp_log("api is supported");
+    cdsp_log("api is supported\n");
     return true;
   }
 #endif
 
 #if IS_WIN
-  cdsp_log("is win!");
+  cdsp_log("is win!\n");
   if (strcmp(api, CLAP_WINDOW_API_WIN32) == 0) {
-    cdsp_log("api is supported");
+    cdsp_log("api is supported\n");
     return true;
   }
 #endif
 
 #if IS_LINUX
   if (strcmp(api, CLAP_WINDOW_API_X11) == 0) {
-    cdsp_log("api is supported");
+    cdsp_log("api is supported\n");
     return true;
   }
 #endif
@@ -45,8 +47,7 @@ bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api
 
 bool cdsp_gui_clap_get_preferred_api(const clap_plugin_t *plugin, const char **api, bool *is_floating)
 {
-  cdsp_log("gui get preferred");
-  cdsp_log(*api);
+  cdsp_log("gui get preferred\n");
   *is_floating = false;
 #if IS_MAC
   *api = CLAP_WINDOW_API_COCOA;
