@@ -51,7 +51,7 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
       app->gui->teardown_opengl(app);
       break;
     case PUGL_UPDATE:
-      cdsp_log("PUGL UPDATE\n");
+      //cdsp_log("PUGL UPDATE\n");
       status = puglObscureView(view);
       if (status) {
         fprintf(stderr, "Error obscuring view (%s)\n", puglStrerror(status));
@@ -108,6 +108,48 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
     case PUGL_BUTTON_PRESS:
       cdsp_log("PUGL BUTTON PRESS\n");
       break;
+    case PUGL_BUTTON_RELEASE:
+      cdsp_log("PUGL BUTTON RELEASE\n");
+      break;
+    case PUGL_KEY_PRESS:
+      cdsp_log("PUGL KEY PRESS\n");
+      break;
+    case PUGL_KEY_RELEASE:
+      cdsp_log("PUGL KEY RELEASE\n");
+      break;
+    case PUGL_TEXT:
+      cdsp_log("PUGL TEXT\n");
+      break;
+    case PUGL_POINTER_IN:
+      cdsp_log("PUGL POINTER IN\n");
+      break;
+    case PUGL_POINTER_OUT:
+      cdsp_log("PUGL POINTER OUT\n");
+      break;
+    case PUGL_MOTION:
+      cdsp_log("PUGL MOTION\n");
+      break;
+    case PUGL_SCROLL:
+      cdsp_log("PUGL SCROLL\n");
+      break;
+    case PUGL_FOCUS_IN:
+      cdsp_log("PUGL FOCUS IN\n");
+      break;
+    case PUGL_FOCUS_OUT:
+      cdsp_log("PUGL FOCUS OUT\n");
+      break;
+    case PUGL_TIMER:
+      cdsp_log("PUGL TIMER\n");
+      break;
+    case PUGL_DATA_OFFER:
+      cdsp_log("PUGL DATA OFFER\n");
+      break;
+    case PUGL_DATA:
+      cdsp_log("PUGL DATA\n");
+      break;
+    case PUGL_CLIENT:
+      cdsp_log("PUGL CLIENT\n");
+      break;
     default:
       cdsp_log("PUGL WE DO NOT KNOW\n");
       break;
@@ -158,6 +200,7 @@ void cdsp_gui_init(cdsp_app_t* app)
 void cdsp_gui_destroy(cdsp_app_t* app)
 {
   app->gui->destroy(app);
+  app->gui->realized = false;
   if (app->gui->cairo_ctx)
     cairo_destroy(app->gui->cairo_ctx);
   puglUnrealize(app->gui->view);
@@ -260,7 +303,8 @@ void cdsp_gui_set_title(cdsp_app_t* app, const char *title)
 
 void cdsp_gui_update(cdsp_app_t* app)
 {
-  puglUpdate(app->gui->world, 0.0);
+  if (app->gui->realized)
+    puglUpdate(app->gui->world, 0.0);
 }
 
 bool cdsp_gui_show(cdsp_app_t* app)

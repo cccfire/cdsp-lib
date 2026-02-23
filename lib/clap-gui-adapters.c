@@ -15,7 +15,7 @@
 
 bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api, bool is_floating)
 {
-  cdsp_log("gui is api supported\n");
+  cdsp_log("clap gui is api supported\n");
   cdsp_log(api);
   cdsp_log("\n");
   if (is_floating)
@@ -47,7 +47,7 @@ bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api
 
 bool cdsp_gui_clap_get_preferred_api(const clap_plugin_t *plugin, const char **api, bool *is_floating)
 {
-  cdsp_log("gui get preferred\n");
+  cdsp_log("clap gui get preferred\n");
   *is_floating = false;
 #if IS_MAC
   *api = CLAP_WINDOW_API_COCOA;
@@ -69,7 +69,7 @@ bool cdsp_gui_clap_get_preferred_api(const clap_plugin_t *plugin, const char **a
 
 bool cdsp_gui_clap_create(const clap_plugin_t *plugin, const char *api, bool is_floating)
 {
-  cdsp_log("gui clap create\n");
+  cdsp_log("clap gui clap create\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
@@ -80,7 +80,7 @@ bool cdsp_gui_clap_create(const clap_plugin_t *plugin, const char *api, bool is_
 
 void cdsp_gui_clap_destroy(const clap_plugin_t *plugin)
 {
-  cdsp_log("gui clap destroy\n");
+  cdsp_log("clap gui clap destroy\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
@@ -92,7 +92,7 @@ void cdsp_gui_clap_destroy(const clap_plugin_t *plugin)
  */
 bool cdsp_gui_clap_set_scale(const clap_plugin_t *plugin, double scale)
 {
-  cdsp_log("gui set scale\n");
+  cdsp_log("clap gui set scale\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
@@ -102,7 +102,7 @@ bool cdsp_gui_clap_set_scale(const clap_plugin_t *plugin, double scale)
 
 bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height)
 {
-  cdsp_log("gui get size\n");
+  cdsp_log("clap gui get size\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   cdsp_gui_get_size(app, width, height);
@@ -116,13 +116,13 @@ bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32
 
 bool cdsp_gui_clap_can_resize(const clap_plugin_t *plugin)
 {
-  cdsp_log("gui can resize\n");
+  cdsp_log("clap gui can resize\n");
   return true;
 }
 
 bool cdsp_gui_clap_get_resize_hints(const clap_plugin_t *plugin, clap_gui_resize_hints_t *hints)
 {
-  cdsp_log("gui get resize hints\n");
+  cdsp_log("clap gui get resize hints\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
@@ -145,7 +145,7 @@ bool cdsp_gui_clap_adjust_size(const clap_plugin_t *plugin, uint32_t *width, uin
 
 bool cdsp_gui_clap_set_size(const clap_plugin_t *plugin, uint32_t width, uint32_t height)
 {
-  cdsp_log("set size\n");
+  cdsp_log("clap gui set size\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   return cdsp_gui_set_size(app, width, height);
@@ -155,7 +155,7 @@ bool cdsp_gui_clap_set_parent(const clap_plugin_t *plugin, const clap_window_t *
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
-  cdsp_log("gui set parent\n");
+  cdsp_log("clap gui set parent\n");
   if (window->api == CLAP_WINDOW_API_WIN32)
     return cdsp_gui_set_parent(app, (const void*) window->win32);
   else if (window->api == CLAP_WINDOW_API_COCOA)
@@ -171,7 +171,7 @@ bool cdsp_gui_clap_set_transient(const clap_plugin_t *plugin, const clap_window_
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
-  cdsp_log("gui set transient parent\n");
+  cdsp_log("clap gui set transient parent\n");
 
   // not a bug here that we call set_parent instead of set_transient!
   // this behaves better
@@ -187,7 +187,7 @@ bool cdsp_gui_clap_set_transient(const clap_plugin_t *plugin, const clap_window_
 
 void cdsp_gui_clap_suggest_title(const clap_plugin_t *plugin, const char *title)
 {
-  cdsp_log("gui suggest title\n");
+  cdsp_log("clap gui suggest title\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   cdsp_gui_set_title(app, title);
@@ -195,21 +195,26 @@ void cdsp_gui_clap_suggest_title(const clap_plugin_t *plugin, const char *title)
 
 bool cdsp_gui_clap_show(const clap_plugin_t *plugin)
 {
-  cdsp_log("gui show\n");
+  cdsp_log("clap gui show\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   clap_host_t* host = (clap_host_t*)((cdsp_clap_package_t*)plugin->plugin_data)->host;
   clap_host_gui_t* host_gui = (clap_host_gui_t*)host->get_extension(host, CLAP_EXT_GUI);
 
-  host_gui->request_resize(host, app->gui->default_width, app->gui->default_height);
+  bool stat = host_gui->request_resize(host, app->gui->default_width, app->gui->default_height);
   host->request_callback(host);
+  FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+  if (!f) return false;
+  fprintf(f, "request resize status (%d) %d, %d\n", (int)stat, app->gui->default_width, app->gui->default_height);
+  fflush(f);
+  fclose(f);
 
   return cdsp_gui_show(app);
 }
 
 bool cdsp_gui_clap_hide(const clap_plugin_t *plugin)
 {
-  cdsp_log("gui hide\n");
+  cdsp_log("clap gui hide\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
   return cdsp_gui_hide(app);
