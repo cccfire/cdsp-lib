@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 
 #include <clap/clap.h>
 #include <clap/ext/gui.h>
@@ -27,12 +28,7 @@ static const clap_plugin_descriptor_t __cdsp_clap_plugin_desc = {\
 #define CDSP_SETUP_PLUGIN(creator) \
 bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
 {\
-  cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));\
-  cdsp_create_app_fun_t create_app = creator;\
-  create_app(app);\
   cdsp_clap_package_t* plugin_data = ((cdsp_clap_package_t*)plugin->plugin_data);\
-  plugin_data->app = app;\
-  plugin_data->extensions = cdsp_clap_generate_extensions_from_app(app, &plugin_data->extensions_length);\
   return true;\
 }\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
@@ -73,6 +69,11 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
   plugin->on_main_thread = cdsp_clap_plugin_on_main_thread;\
 \
   fflush(stdout);\
+  cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));\
+  cdsp_create_app_fun_t create_app = creator;\
+  create_app(app);\
+  plugin_data->app = app;\
+  plugin_data->extensions = cdsp_clap_generate_extensions_from_app(app, &plugin_data->extensions_length);\
   return plugin;\
 }\
 const clap_plugin_factory_t __cdsp_clap_plugin_factory = { \
@@ -148,3 +149,11 @@ const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(
 bool cdsp_clap_entry_init(const char *plugin_path);
 
 void cdsp_clap_entry_deinit(void);
+
+static void cdsp_log(const char* msg) {
+  FILE* f = fopen("C:\\cdsp_debug.log", "a");
+  if (!f) return;
+  fprintf(f, "%s\n", msg);
+  fflush(f);
+  fclose(f);
+}

@@ -13,14 +13,6 @@ typedef struct {
   const clap_host_t *host;
 } minimal_plugin_t;
 
-static void cdsp_log(const char* msg) {
-  FILE* f = fopen("C:\\cdsp_debug.log", "a");
-  if (!f) return;
-  fprintf(f, "%s\n", msg);
-  fflush(f);
-  fclose(f);
-}
-
 void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) 
 {
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
@@ -68,20 +60,21 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
   const uint32_t nframes = process->frames_count;
   const uint32_t nev = process->in_events->size(process->in_events);
 
+
   if (process->audio_outputs_count == 0) {
-    cdsp_log("zero audio_outputs\n");
+    // cdsp_log("zero audio_outputs\n");
     return CLAP_PROCESS_CONTINUE;
   }
   if (process->audio_inputs_count == 0) {
-    cdsp_log("zero audio_inputs\n");
+    // cdsp_log("zero audio_inputs\n");
     return CLAP_PROCESS_CONTINUE;
   }
   if (!process->audio_outputs) {
-    cdsp_log("null audio output\n");
+    // cdsp_log("null audio output\n");
     return CLAP_PROCESS_CONTINUE;
   }
   if (!process->audio_inputs) {
-    cdsp_log("null audio input\n");
+    // cdsp_log("null audio input\n");
     return CLAP_PROCESS_CONTINUE;
   }
 
@@ -102,10 +95,14 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
 
 const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, const char *id) 
 {
+  cdsp_log("queried extension: ");
+  cdsp_log(id);
+  cdsp_log("\n");
   cdsp_clap_extension_t* extensions = ((cdsp_clap_package_t*)plugin->plugin_data)->extensions;
   size_t extensions_length = ((cdsp_clap_package_t*)plugin->plugin_data)->extensions_length;
   for (size_t i = 0; i < extensions_length; i++) {
     if (!strcmp(extensions[i].name, id)) {
+      cdsp_log("we found it");
       return extensions[i].extension;
     }
   }
@@ -115,7 +112,6 @@ const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, con
 
 void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin) 
 {
-  printf("main thread\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_update(app);
 }

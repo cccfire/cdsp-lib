@@ -93,6 +93,13 @@ target_include_directories(cdsp-lib PRIVATE
 target_link_libraries(cdsp-lib PRIVATE cairo::cairo OpenGL::GL pugl)
 add_dependencies(cdsp-lib copy_headers)
 target_compile_definitions(cdsp-lib PUBLIC PUGL_STATIC)
+if(WIN32)
+  target_compile_definitions(cdsp-lib PRIVATE IS_WIN=1)
+elseif(APPLE)
+  target_compile_definitions(cdsp-lib PRIVATE IS_MAC=1)
+else()
+  target_compile_definitions(cdsp-lib PRIVATE IS_LINUX=1)
+endif()
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC PUGL_STATIC)
