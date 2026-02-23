@@ -167,8 +167,13 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
   if (app->gui->realized) {
     PuglStatus status = puglSetSizeHint(app->gui->view, PUGL_CURRENT_SIZE, width, height);
     if (status) {
-        fprintf(stderr, "Error setting size (%s)\n", puglStrerror(status));
-        fflush(stderr);
+      fprintf(stderr, "Error setting size (%s)\n", puglStrerror(status));
+      fflush(stderr);
+      FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+      if (!f) return false;
+      fprintf(f, "Error setting size (%s)\n", puglStrerror(status));
+      fflush(f);
+      fclose(f);
     } else {
       if (app->gui->cairo_ctx)
         cairo_destroy(app->gui->cairo_ctx);
@@ -182,14 +187,20 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
     app->gui->default_height = (uint16_t) height;
     return true;
   }
+  return true;
 }
 
 bool cdsp_gui_set_parent(cdsp_app_t* app, void *window)
 {
   PuglStatus status = puglSetParent(app->gui->view, (PuglNativeView)window);
   if (status) {
-      fprintf(stderr, "Error setting parent (%s)\n", puglStrerror(status));
-      fflush(stderr);
+    fprintf(stderr, "Error setting parent (%s)\n", puglStrerror(status));
+    fflush(stderr);
+    FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+    if (!f) return false;
+    fprintf(f, "Error setting parent (%s)\n", puglStrerror(status));
+    fflush(f);
+    fclose(f);
   }
   return status == PUGL_SUCCESS;
 }
@@ -198,8 +209,13 @@ bool cdsp_gui_set_transient(cdsp_app_t* app, void *window)
 {
   PuglStatus status = puglSetTransientParent(app->gui->view, (PuglNativeView)window);
   if (status) {
-      fprintf(stderr, "Error setting transient parent (%s)\n", puglStrerror(status));
-      fflush(stderr);
+    fprintf(stderr, "Error setting transient parent (%s)\n", puglStrerror(status));
+    fflush(stderr);
+    FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+    if (!f) return false;
+    fprintf(f, "Error setting transient parent (%s)\n", puglStrerror(status));
+    fflush(f);
+    fclose(f);
   }
   return status == PUGL_SUCCESS;
 }
@@ -218,8 +234,13 @@ bool cdsp_gui_show(cdsp_app_t* app)
 {
   PuglStatus status = puglShow(app->gui->view, PUGL_SHOW_RAISE);
   if (status) {
-      fprintf(stderr, "Error showing (%s)\n", puglStrerror(status));
-      fflush(stderr);
+    fprintf(stderr, "Error showing (%s)\n", puglStrerror(status));
+    fflush(stderr);
+    FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+    if (!f) return false;
+    fprintf(f, "Error showing (%s)\n", puglStrerror(status));
+    fflush(f);
+    fclose(f);
   } else {
     app->gui->realized = true;
   }
