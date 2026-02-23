@@ -18,6 +18,7 @@ bool cdsp_gui_clap_is_api_supported(const clap_plugin_t *plugin, const char *api
   cdsp_log("clap gui is api supported\n");
   cdsp_log(api);
   cdsp_log("\n");
+  if (is_floating) cdsp_log("floating!\n");
   if (is_floating)
     return true;
 #if IS_MAC

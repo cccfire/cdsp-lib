@@ -46,6 +46,8 @@ void create_minimal_app(cdsp_app_t* app)
   cdsp_gui_t* gui = (cdsp_gui_t*) calloc(1, sizeof(cdsp_gui_t));
   gui->default_height = 480;
   gui->default_width = 640;
+  gui->aspect_ratio_height = 480;
+  gui->aspect_ratio_width = 640;
   gui->should_preserve_aspect_ratio = true;
   gui->realized = false;
   gui->setup_opengl = _setup_opengl;

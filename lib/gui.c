@@ -218,6 +218,7 @@ bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
     PuglArea area = puglGetSizeHint(app->gui->view, PUGL_CURRENT_SIZE);
     *width = (uint32_t)area.width;
     *height = (uint32_t)area.height;
+    printf("%d, %d\n", *width, *height);
   } else {
     *width = (uint32_t)app->gui->default_width;
     *height = (uint32_t)app->gui->default_height;
@@ -234,6 +235,12 @@ bool cdsp_gui_adjust_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
   
   *height = (uint32_t) wratio * app->gui->aspect_ratio_height;
 
+  FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
+  if (!f) return false;
+  fprintf(f, "gui adjusting size %d, %d\n", *width, *height);
+  fflush(f);
+  fclose(f);
+
   return true;
 }
 
@@ -246,7 +253,7 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
       fflush(stderr);
       FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
       if (!f) return false;
-      fprintf(f, "Error setting size (%s)\n", puglStrerror(status));
+      fprintf(f, "Error setting size (%s) %d, %d\n", puglStrerror(status), width, height);
       fflush(f);
       fclose(f);
     } else {
