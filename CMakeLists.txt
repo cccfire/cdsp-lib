@@ -1,6 +1,9 @@
 include(ExternalProject)
 
 cmake_minimum_required(VERSION 3.16)
+cmake_policy(SET CMP0091 NEW) # use CMAKE_MSVC_RUNTIME_LIBRARY
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 project(clap_app C)
 
 set(CMAKE_C_STANDARD 11)
@@ -93,12 +96,32 @@ target_compile_definitions(cdsp-lib PUBLIC PUGL_STATIC)
 
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC PUGL_STATIC)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  FC_STATIC
+  CAIRO_WIN32_STATIC_BUILD
+)
 target_link_libraries(${PROJECT_NAME} cdsp-lib clap cairo::cairo OpenGL::GL)
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${PUGL_INCLUDE_DIR}
   ${cairo_INCLUDE_DIR}
 )
+
+if(WIN32)
+  message(STATUS "Adding def file to target: ${PROJECT_NAME}")
+  set(DEF_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/clap_app.def")
+  message(STATUS "DEF file exists: ${DEF_FILE}")
+  target_sources(${PROJECT_NAME} PRIVATE "${DEF_FILE}")
+  set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY
+    LINK_FLAGS " /DEF:\"${CMAKE_CURRENT_SOURCE_DIR}/src/clap_app.def\""
+  )
+  message(STATUS "CURRENT_SOURCE_DIR is: ${CMAKE_CURRENT_SOURCE_DIR}")
+  message(STATUS "PROJECT_NAME is: ${PROJECT_NAME}")
+  get_target_property(TARGET_SOURCES ${PROJECT_NAME} SOURCES)
+  message(STATUS "Sources: ${TARGET_SOURCES}")
+
+  target_link_options(${PROJECT_NAME} PRIVATE /MAP)
+endif()
 
 # Standalone executable target
 add_executable(${PROJECT_NAME}_standalone src/main.c)

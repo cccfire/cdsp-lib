@@ -8,24 +8,18 @@
 #include "gui.h"
 #include "clap-adapters.h"
 
-// Plugin descriptor
-const clap_plugin_descriptor_t s_plugin_desc = {
-  .clap_version = CLAP_VERSION_INIT,
-  .id = "com.example.minimal-clap-plugin",
-  .name = "Minimal CLAP Plugin",
-  .vendor = "Example Vendor",
-  .url = "https://example.com",
-  .manual_url = "https://example.com/manual",
-  .support_url = "https://example.com/support",
-  .version = "1.0.0",
-  .description = "A minimal CLAP plugin example",
-  .features = (const char *[]){CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL}
-};
-
 // Plugin instance structure
 typedef struct {
   const clap_host_t *host;
 } minimal_plugin_t;
+
+static void cdsp_log(const char* msg) {
+  FILE* f = fopen("C:\\cdsp_debug.log", "a");
+  if (!f) return;
+  fprintf(f, "%s\n", msg);
+  fflush(f);
+  fclose(f);
+}
 
 void cdsp_clap_plugin_destroy(const struct clap_plugin *plugin) 
 {
@@ -74,6 +68,23 @@ clap_process_status cdsp_clap_plugin_process(const struct clap_plugin *plugin,
   const uint32_t nframes = process->frames_count;
   const uint32_t nev = process->in_events->size(process->in_events);
 
+  if (process->audio_outputs_count == 0) {
+    cdsp_log("zero audio_outputs\n");
+    return CLAP_PROCESS_CONTINUE;
+  }
+  if (process->audio_inputs_count == 0) {
+    cdsp_log("zero audio_inputs\n");
+    return CLAP_PROCESS_CONTINUE;
+  }
+  if (!process->audio_outputs) {
+    cdsp_log("null audio output\n");
+    return CLAP_PROCESS_CONTINUE;
+  }
+  if (!process->audio_inputs) {
+    cdsp_log("null audio input\n");
+    return CLAP_PROCESS_CONTINUE;
+  }
+
   // Simple passthrough - copy input to output
   for (uint32_t ch = 0; ch < process->audio_outputs[0].channel_count; ++ch) {
     if (ch < process->audio_inputs[0].channel_count) {
@@ -104,6 +115,7 @@ const void *cdsp_clap_plugin_get_extension(const struct clap_plugin *plugin, con
 
 void cdsp_clap_plugin_on_main_thread(const struct clap_plugin *plugin) 
 {
+  printf("main thread\n");
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_update(app);
 }
@@ -116,11 +128,13 @@ uint32_t cdsp_clap_plugin_factory_get_plugin_count(const struct clap_plugin_fact
 // Entry point
 bool cdsp_clap_entry_init(const char *plugin_path) 
 {
+  cdsp_log("entry init\n");
   return true;
 }
 
 void cdsp_clap_entry_deinit(void) 
 {
+  cdsp_log("entry deinit\n");
 }
 
 // Export the plugin entry point

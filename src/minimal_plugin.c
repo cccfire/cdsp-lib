@@ -39,7 +39,7 @@ static void _empty_fun(cdsp_app_t* app) { (void)app; }
 
 void create_minimal_app(cdsp_app_t* app)
 {
-  app->name = "minimal app";
+  app->name = "minimal plugin";
   app->type = CDSP_PLUGIN_APP_TYPE;
   app->active = true;
 

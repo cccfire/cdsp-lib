@@ -1,5 +1,6 @@
 *.swp
 clap-host.exe
+clap-validator.exe
 vcpkg_installed/
 build/
 include/

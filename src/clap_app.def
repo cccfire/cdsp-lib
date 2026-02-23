@@ -1,0 +1,3 @@
+LIBRARY clap_app
+EXPORTS
+    clap_entry

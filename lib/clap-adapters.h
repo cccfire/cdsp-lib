@@ -38,7 +38,7 @@ bool cdsp_clap_plugin_init(const struct clap_plugin *plugin)\
 const clap_plugin_descriptor_t *cdsp_clap_plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, \
     uint32_t index) \
 {\
-  return index == 0 ? &__cdsp_clap_plugin_desc : NULL;\
+  return &__cdsp_clap_plugin_desc;\
 }\
 \
 const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_plugin_factory *factory,\
@@ -50,7 +50,7 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
     return NULL;\
   }\
 \
-  cdsp_clap_package_t *plugin_data = (cdsp_clap_package_t*)calloc(1, sizeof(cdsp_clap_package_t) + sizeof(clap_plugin_t));\
+  cdsp_clap_package_t *plugin_data = (cdsp_clap_package_t*)calloc(1, sizeof(cdsp_clap_package_t));\
   if (!plugin_data) \
   {\
     return NULL;\
@@ -58,7 +58,7 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
   \
   plugin_data->host = host;\
 \
-  clap_plugin_t *plugin = (clap_plugin_t *)(plugin_data + 1);\
+  clap_plugin_t *plugin = (clap_plugin_t *)calloc(1, sizeof(clap_plugin_t));\
   plugin->desc = &__cdsp_clap_plugin_desc;\
   plugin->plugin_data = plugin_data;\
   plugin->init = cdsp_clap_plugin_init;\
@@ -72,6 +72,7 @@ const clap_plugin_t *cdsp_clap_plugin_factory_create_plugin(const struct clap_pl
   plugin->get_extension = cdsp_clap_plugin_get_extension;\
   plugin->on_main_thread = cdsp_clap_plugin_on_main_thread;\
 \
+  fflush(stdout);\
   return plugin;\
 }\
 const clap_plugin_factory_t __cdsp_clap_plugin_factory = { \
