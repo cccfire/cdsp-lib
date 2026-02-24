@@ -27,8 +27,8 @@ static cdsp_clap_package_t* create_test_package(void) {
     app->type = CDSP_PLUGIN_APP_TYPE;
 
     cdsp_gui_t* gui = (cdsp_gui_t*)calloc(1, sizeof(cdsp_gui_t));
-    gui->default_width = 640;
-    gui->default_height = 480;
+    gui->width = 640;
+    gui->height = 480;
     gui->min_width = 320;
     gui->min_height = 240;
     gui->aspect_ratio_width = 4;
@@ -257,8 +257,8 @@ static void test_gui_struct_defaults(void **state) {
     assert_null(gui->world);
     assert_null(gui->view);
     assert_null(gui->cairo_ctx);
-    assert_int_equal(gui->default_width, 0);
-    assert_int_equal(gui->default_height, 0);
+    assert_int_equal(gui->width, 0);
+    assert_int_equal(gui->height, 0);
     assert_false(gui->should_preserve_aspect_ratio);
 
     free(gui);

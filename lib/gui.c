@@ -166,7 +166,7 @@ void cdsp_gui_init(cdsp_app_t* app)
 
   app->gui->view = puglNewView(app->gui->world);
   puglSetViewString(app->gui->view, PUGL_WINDOW_TITLE, "pugl window");
-  puglSetSizeHint(app->gui->view, PUGL_DEFAULT_SIZE, app->gui->default_width, app->gui->default_height);
+  puglSetSizeHint(app->gui->view, PUGL_DEFAULT_SIZE, app->gui->width, app->gui->height);
   puglSetSizeHint(app->gui->view, PUGL_MIN_SIZE, app->gui->min_width, app->gui->min_height);
   puglSetSizeHint(app->gui->view, PUGL_MIN_ASPECT, 1, 1);
   puglSetSizeHint(app->gui->view, PUGL_MAX_ASPECT, 16, 9);
@@ -180,7 +180,7 @@ void cdsp_gui_init(cdsp_app_t* app)
 
   puglSetHandle(app->gui->view, app);
 
-  cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, app->gui->default_width, app->gui->default_height);
+  cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, app->gui->width, app->gui->height);
   app->gui->cairo_ctx = cairo_create(cairo_surface);
   cairo_surface_destroy(cairo_surface);
 
@@ -212,8 +212,8 @@ bool cdsp_gui_get_size(cdsp_app_t* app, uint32_t *width, uint32_t *height)
     *height = (uint32_t)area.height;
     printf("%d, %d\n", *width, *height);
   } else {
-    *width = (uint32_t)app->gui->default_width;
-    *height = (uint32_t)app->gui->default_height;
+    *width = (uint32_t)app->gui->width;
+    *height = (uint32_t)app->gui->height;
     printf("%d, %d\n", *width, *height);
   }
   return true;
@@ -259,10 +259,12 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
       puglObscureView(app->gui->view);
     }
     fclose(f);
+    app->gui->width = (uint16_t) width;
+    app->gui->height = (uint16_t) height;
     return status == PUGL_SUCCESS;
   } else {
-    app->gui->default_width = (uint16_t) width;
-    app->gui->default_height = (uint16_t) height;
+    app->gui->width = (uint16_t) width;
+    app->gui->height = (uint16_t) height;
     return true;
   }
   return true;

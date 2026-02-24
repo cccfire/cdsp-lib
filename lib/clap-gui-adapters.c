@@ -202,11 +202,11 @@ bool cdsp_gui_clap_show(const clap_plugin_t *plugin)
   clap_host_t* host = (clap_host_t*)((cdsp_clap_package_t*)plugin->plugin_data)->host;
   clap_host_gui_t* host_gui = (clap_host_gui_t*)host->get_extension(host, CLAP_EXT_GUI);
 
-  bool stat = host_gui->request_resize(host, app->gui->default_width, app->gui->default_height);
+  bool stat = host_gui->request_resize(host, app->gui->width, app->gui->height);
   host->request_callback(host);
   FILE* f = fopen(CDSP_DEBUG_FILE_PATH, "a");
   if (!f) return false;
-  fprintf(f, "request resize status (%d) %d, %d\n", (int)stat, app->gui->default_width, app->gui->default_height);
+  fprintf(f, "request resize status (%d) %d, %d\n", (int)stat, app->gui->width, app->gui->height);
   fflush(f);
   fclose(f);
 

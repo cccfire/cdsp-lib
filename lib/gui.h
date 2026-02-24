@@ -19,8 +19,8 @@ typedef struct cdsp_gui {
   uint16_t aspect_ratio_height;
   uint16_t min_width;
   uint16_t min_height;
-  uint16_t default_width;
-  uint16_t default_height;
+  uint16_t width;
+  uint16_t height;
 
   void (*setup_opengl) (cdsp_app_t*);
   void (*teardown_opengl) (cdsp_app_t*);
