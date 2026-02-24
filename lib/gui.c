@@ -58,6 +58,16 @@ PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event)
     case PUGL_EXPOSE:
       cdsp_log("PUGL EXPOSE\n");
 
+
+      if (app->gui->resize) {
+        if (app->gui->cairo_ctx)
+          cairo_destroy(app->gui->cairo_ctx);
+        cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, app->gui->width, app->gui->height);
+        app->gui->cairo_ctx = cairo_create(cairo_surface);
+        cairo_surface_destroy(cairo_surface);
+        app->gui->resize = false;
+      }
+
       app->gui->draw(app);
 
       cairo_t *cr = app->gui->cairo_ctx;
@@ -184,6 +194,7 @@ void cdsp_gui_init(cdsp_app_t* app)
   app->gui->cairo_ctx = cairo_create(cairo_surface);
   cairo_surface_destroy(cairo_surface);
 
+  app->gui->resize = false;
   app->gui->realized = false;
   
   app->gui->init(app);
@@ -248,25 +259,16 @@ bool cdsp_gui_set_size(cdsp_app_t* app, uint32_t width, uint32_t height)
       fprintf(f, "Error setting size (%s) %d, %d\n", puglStrerror(status), width, height);
       fflush(f);
     } else {
-      if (app->gui->cairo_ctx)
-        cairo_destroy(app->gui->cairo_ctx);
       if (!f) return false;
       fprintf(f, "gui setting size %d, %d\n", width, height);
       fflush(f);
-      cairo_surface_t* cairo_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
-      app->gui->cairo_ctx = cairo_create(cairo_surface);
-      cairo_surface_destroy(cairo_surface);
       puglObscureView(app->gui->view);
     }
     fclose(f);
-    app->gui->width = (uint16_t) width;
-    app->gui->height = (uint16_t) height;
-    return status == PUGL_SUCCESS;
-  } else {
-    app->gui->width = (uint16_t) width;
-    app->gui->height = (uint16_t) height;
-    return true;
-  }
+  } 
+  app->gui->width = (uint16_t) width;
+  app->gui->height = (uint16_t) height;
+  app->gui->resize = true;
   return true;
 }
 

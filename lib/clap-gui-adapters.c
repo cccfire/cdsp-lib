@@ -118,7 +118,9 @@ bool cdsp_gui_clap_get_size(const clap_plugin_t *plugin, uint32_t *width, uint32
 bool cdsp_gui_clap_can_resize(const clap_plugin_t *plugin)
 {
   cdsp_log("clap gui can resize\n");
-  return true;
+  cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
+  cdsp_gui_t* gui = app->gui;
+  return gui->can_resize;
 }
 
 bool cdsp_gui_clap_get_resize_hints(const clap_plugin_t *plugin, clap_gui_resize_hints_t *hints)
@@ -127,8 +129,8 @@ bool cdsp_gui_clap_get_resize_hints(const clap_plugin_t *plugin, clap_gui_resize
   cdsp_app_t* app = (cdsp_app_t*)((cdsp_clap_package_t*)plugin->plugin_data)->app;
   cdsp_gui_t* gui = app->gui;
 
-  hints->can_resize_horizontally = true;
-  hints->can_resize_vertically = true;
+  hints->can_resize_horizontally = gui->can_resize;
+  hints->can_resize_vertically = gui->can_resize;
   hints->preserve_aspect_ratio = gui->should_preserve_aspect_ratio;
   hints->aspect_ratio_width = gui->aspect_ratio_width;
   hints->aspect_ratio_height = gui->aspect_ratio_height;

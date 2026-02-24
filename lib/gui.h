@@ -32,6 +32,8 @@ typedef struct cdsp_gui {
 
   bool should_preserve_aspect_ratio : 1;
   bool realized : 1;
+  bool can_resize : 1;
+  bool resize : 1;
 } cdsp_gui_t;
 
 PuglStatus cdsp_pugl_on_event(PuglView *view, const PuglEvent *event);
