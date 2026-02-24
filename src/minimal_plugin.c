@@ -25,10 +25,6 @@ static void _teardown_opengl(cdsp_app_t* app)
 
 static void _draw(cdsp_app_t* app)
 {
-
-  uint32_t width, height;
-  cdsp_gui_get_size(app, &width, &height);
-  //printf("width: %d, height: %d\n", width, height);
   cairo_t *cr = app->gui->cairo_ctx;
 
   cairo_set_source_rgb(cr, 0.5, 0.05, 0.05);
