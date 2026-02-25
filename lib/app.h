@@ -30,4 +30,8 @@ typedef struct cdsp_app {
 
 typedef void (*cdsp_create_app_fun_t) (cdsp_app_t*);
 
-void cdsp_destroy_app(cdsp_app_t* app);
+/**
+ * @param[in] app 
+ * @return true if successful, false otherwise
+ */
+bool cdsp_destroy_app(cdsp_app_t* app);

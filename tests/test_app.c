@@ -61,10 +61,13 @@ static void test_destroy_app(void **state) {
     assert_non_null(app->gui);
     assert_non_null(app->dsp);
 
-    /* Destroy should free gui and dsp */
+    /* Destroy should free gui and dsp then set gui and dsp to NULL */
     cdsp_destroy_app(app);
 
-    /* After destroy, we just verify no crash - the memory is freed */
+    assert_null(app->gui);
+    assert_null(app->dsp);
+
+    /* After destroy, we try to free; app should NOT be freed in cdsp_destroy_app */
     free(app);
 }
 
