@@ -156,15 +156,14 @@ static void test_app_null_components(void **state)
     cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));
     app->gui = NULL;
     app->dsp = NULL;
-    app->destroy = mock_destroy;
 
     // cdsp_destroy_app should handle NULL gracefully (free(NULL) is valid) 
     cdsp_destroy_app(app);
     free(app);
 }
 
-/* Test: app function pointers */
-static void test_app_function_pointers(void **state) 
+/* Test: app handles null function pointers */
+static void test_app_null_function_pointers(void **state) 
 {
     (void)state;
 
@@ -186,7 +185,7 @@ int main(void) {
         cmocka_unit_test(test_app_audio_params),
         cmocka_unit_test(test_app_context),
         cmocka_unit_test(test_app_null_components),
-        cmocka_unit_test(test_app_function_pointers),
+        cmocka_unit_test(test_app_null_function_pointers),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
