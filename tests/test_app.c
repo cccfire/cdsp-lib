@@ -13,8 +13,15 @@
 #include "cdsp/gui.h"
 #include "cdsp/dsp.h"
 
+/* Mock destroy function that just sets app's context to NULL */
+static void mock_destroy (cdsp_app_t* app) 
+{
+  app->ctx = NULL;
+}
+
 /* Test helper: create a minimal app */
-static cdsp_app_t* create_test_app(void) {
+static cdsp_app_t* create_test_app(void) 
+{
     cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));
     app->name = "test_app";
     app->type = CDSP_STANDALONE_APP_TYPE;
@@ -24,7 +31,8 @@ static cdsp_app_t* create_test_app(void) {
 }
 
 /* Test: app type enum values */
-static void test_app_type_enum(void **state) {
+static void test_app_type_enum(void **state) 
+{
     (void)state;
 
     assert_int_equal(CDSP_STANDALONE_APP_TYPE, 0);
@@ -32,7 +40,8 @@ static void test_app_type_enum(void **state) {
 }
 
 /* Test: app structure initialization */
-static void test_app_struct_initialization(void **state) {
+static void test_app_struct_initialization(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
@@ -51,28 +60,45 @@ static void test_app_struct_initialization(void **state) {
     free(app);
 }
 
-/* Test: cdsp_destroy_app frees gui and dsp */
-static void test_destroy_app(void **state) {
+
+/* Test: cdsp_destroy_app frees gui and dsp and calls app->destroy */
+static void test_destroy_app(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
 
-    /* Store pointers to verify they were allocated */
     assert_non_null(app->gui);
     assert_non_null(app->dsp);
 
-    /* Destroy should free gui and dsp then set gui and dsp to NULL */
+    // Set app's context to non-null
+    app->ctx = (void*)app;
+    assert_non_null(app->ctx);
+
+    // app->destroy is set to mock_destroy, which sets context to NULL
+    app->destroy = mock_destroy;
+    assert_non_null(app->destroy);
+
+    /* Destroy should free gui and dsp then set gui and dsp to NULL 
+     * It should also call app->destroy, which will set app->ctx to NULL */
     cdsp_destroy_app(app);
 
+    // Check that gui and dsp were nulled
     assert_null(app->gui);
     assert_null(app->dsp);
 
-    /* After destroy, we try to free; app should NOT be freed in cdsp_destroy_app */
+    // Check that app->destroy was called
+    assert_null(app->ctx);
+
+    /* After destroy, we try to free; 
+     * app should NOT be freed in cdsp_destroy_app;
+     * no crash = success */
     free(app);
 }
 
 /* Test: app with plugin type */
-static void test_app_plugin_type(void **state) {
+static void test_app_plugin_type(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
@@ -85,7 +111,8 @@ static void test_app_plugin_type(void **state) {
 }
 
 /* Test: app sample rate and frame counts */
-static void test_app_audio_params(void **state) {
+static void test_app_audio_params(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
@@ -105,7 +132,8 @@ static void test_app_audio_params(void **state) {
 }
 
 /* Test: app context pointer */
-static void test_app_context(void **state) {
+static void test_app_context(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
@@ -121,25 +149,27 @@ static void test_app_context(void **state) {
 }
 
 /* Test: app with NULL gui and dsp (edge case) */
-static void test_app_null_components(void **state) {
+static void test_app_null_components(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = (cdsp_app_t*)calloc(1, sizeof(cdsp_app_t));
     app->gui = NULL;
     app->dsp = NULL;
+    app->destroy = mock_destroy;
 
-    /* cdsp_destroy_app should handle NULL gracefully (free(NULL) is valid) */
+    // cdsp_destroy_app should handle NULL gracefully (free(NULL) is valid) 
     cdsp_destroy_app(app);
     free(app);
 }
 
 /* Test: app function pointers */
-static void test_app_function_pointers(void **state) {
+static void test_app_function_pointers(void **state) 
+{
     (void)state;
 
     cdsp_app_t* app = create_test_app();
 
-    /* Initially NULL */
     assert_null(app->init);
     assert_null(app->destroy);
 
