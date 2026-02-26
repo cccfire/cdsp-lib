@@ -1,6 +1,9 @@
 /**
- * AI-generated Unit tests for app.c
- * TODO:  Pending review
+ * Unit tests for app.c
+ * Last reviewed: Caleb C. Chan - 2/26/2026
+ *
+ * Reviews:
+ * Caleb C. Chan - 2/26/2026
  */
 #include <stdarg.h>
 #include <stddef.h>
