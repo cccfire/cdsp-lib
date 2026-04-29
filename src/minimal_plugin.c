@@ -70,6 +70,8 @@ CDSP_PLUGIN_DESCRIPTOR(
     "cccfire",
     "https://example.com",
     "0.1.0",
-    "minimal plugin example");
+    "minimal plugin example",
+    CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL
+    );
 
 CDSP_SETUP_PLUGIN(create_minimal_app);

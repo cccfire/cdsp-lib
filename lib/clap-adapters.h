@@ -10,7 +10,7 @@
  * Would like to generate descriptor automatically.
  */
 
-#define CDSP_PLUGIN_DESCRIPTOR(in_id, in_name, in_vendor, in_url, in_version, in_description)\
+#define CDSP_PLUGIN_DESCRIPTOR(in_id, in_name, in_vendor, in_url, in_version, in_description, ...)\
 static const clap_plugin_descriptor_t __cdsp_clap_plugin_desc = {\
     .clap_version = CLAP_VERSION_INIT,\
     .id = in_id,\
@@ -21,7 +21,7 @@ static const clap_plugin_descriptor_t __cdsp_clap_plugin_desc = {\
     .support_url = in_url,\
     .version = in_version,\
     .description = in_description,\
-    .features = (const char *[]){CLAP_PLUGIN_FEATURE_AUDIO_EFFECT, CLAP_PLUGIN_FEATURE_STEREO, NULL}\
+    .features = (const char *[]){__VA_ARGS__}\
 }
 
 #define CDSP_SETUP_PLUGIN(creator) \
